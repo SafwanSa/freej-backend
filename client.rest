@@ -1,0 +1,6 @@
+GET http://localhost:8000/auth/error/ HTTP/1.1
+content-type: application/json
+
+{
+    "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY0Njg1MDIyNiwianRpIjoiOWY3MWVlOTQwYWZmNDI4MmI0NjE3Yjg0ZmFmZTg5NTgiLCJ1c2VyX2lkIjoxfQ.DkrUTaMgv1Z4g2tshFZgeYpBnavZiVMJnfQAFPidJNk"
+}

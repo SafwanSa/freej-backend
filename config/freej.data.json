@@ -1,0 +1,61 @@
+{
+    "configs": [
+        {
+            "key": "ACTIVATE_SMS",
+            "value": "0",
+            "description": "Allowing SMS messages to be sent. (Use 1 to ENABLE and 0 to DISABLE)",
+            "is_system": true,
+            "is_private": false,
+            "tag": "notification"
+        },
+        {
+            "key": "TWITTER_LINK",
+            "value": "",
+            "description": "Your app's Twitter link",
+            "is_system": false,
+            "is_private": false,
+            "tag": "social_media"
+        },
+        {
+            "key": "WHATSAPP_LINK",
+            "value": "",
+            "description": "Your app's WhatsApp link",
+            "is_system": false,
+            "is_private": false,
+            "tag": "links"
+        },
+        {
+            "key": "IOS_APP_LINK",
+            "value": "",
+            "description": "Your app's iOS app link for download",
+            "is_system": true,
+            "is_private": false,
+            "tag": "mobile_app_links"
+        },
+        {
+            "key": "ANDROID_APP_LINK",
+            "value": "",
+            "description": "Your app's Android app link for download",
+            "is_system": true,
+            "is_private": false,
+            "tag": "mobile_app_links"
+        },
+        {
+            "key": "WEBSITE_URL",
+            "value": "",
+            "description": "Your app's website app URL",
+            "is_system": true,
+            "is_private": false,
+            "tag": "web_app_link"
+        },
+        {
+            "key": "ACTIVATE_EMAILS",
+            "value": "0",
+            "description": "Allowing emails to be sent. (Use 1 to ENABLE and 0 to DISABLE)",
+            "is_system": true,
+            "is_private": true,
+            "tag": "notification"
+        }
+
+    ]
+}
