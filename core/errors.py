@@ -9,8 +9,9 @@ class Error(Enum):
     _DEFAULT_MESSAGE = {"code": 0, "detail": _("Default: {}")}
 
 
-class APIError:
+class APIError(Exception):
     def __init__(self, error: Error, extra=None):
+        self.extra = extra or {}
         self.error = error
         self.extra = extra or None
         error_detail = error.value
@@ -19,4 +20,8 @@ class APIError:
             if isinstance(self.extra, list):
                 error_detail['detail'] = error_detail['detail'].format(*extra)
 
-        raise ValidationError(**error_detail)
+        # try:
+        #     logger.info(error.value)
+        # except BaseException:
+        #     pass
+        super().__init__(error_detail)
