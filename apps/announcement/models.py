@@ -19,15 +19,15 @@ class Announcement(BaseModel):
 
 
 class BuildingAnnouncement(Announcement):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name='announcements')
 
 
 class CampusAnnouncement(Announcement):
-    campus = models.ForeignKey(Campus, on_delete=models.CASCADE)
+    campus = models.ForeignKey(Campus, on_delete=models.CASCADE, related_name='announcements')
 
 
 class CommercialAnnouncement(Announcement):
-    campus = models.ForeignKey(Campus, on_delete=models.CASCADE)
+    campus = models.ForeignKey(Campus, on_delete=models.CASCADE, related_name='commercial_announcements')
     impressions = models.IntegerField(default=0)
     advertiser_name = models.CharField(max_length=50)
     # TODO: Add image or images?
