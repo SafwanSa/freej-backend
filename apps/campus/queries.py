@@ -35,3 +35,14 @@ def get_room_by_id(id: int) -> Room:
         return Room.objects.get(id=id)
     except Room.DoesNotExist:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[Room._meta.model_name])
+
+
+def get_resident_profile_by(user: User) -> ResidentProfile:
+    try:
+        return ResidentProfile.objects.get(user=user)
+    except ResidentProfile.DoesNotExist:
+        raise APIError(Error.INSTANCE_NOT_FOUND, extra=[ResidentProfile._meta.model_name])
+
+
+def get_room_residents(room: Room) -> Iterable[ResidentProfile]:
+    return room.residents.filter(is_deleted=False)

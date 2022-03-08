@@ -15,7 +15,12 @@ class Building(BaseModel):
     name = models.CharField(max_length=10)
     # TODO: Add location_url?
     # TODO: Add image?
-    supervisor = models.OneToOneField('campus.ResidentProfile', on_delete=models.SET_NULL, null=True, blank=True)
+    supervisor = models.OneToOneField(
+        'campus.ResidentProfile',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='supervised_building')
     whatsApp_link = models.URLField(null=True, blank=True)
 
 
