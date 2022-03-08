@@ -31,6 +31,6 @@ class EventApplication(BaseModel):
     class ApplicationStatus(Enum):
         Joined = 'joined'
         Cancelled = 'cancelled'
-    resident = models.ForeignKey(ResidentProfile, on_delete=models.CASCADE, related_name='applied_events')
+    resident = models.ForeignKey(ResidentProfile, on_delete=models.CASCADE, related_name='events_applications')
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='applications')
     status = models.CharField(max_length=30, choices=utils.create_choices_from_enum(ApplicationStatus))

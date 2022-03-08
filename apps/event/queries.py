@@ -26,3 +26,7 @@ def get_all_event_applications(event: Event) -> Iterable[EventApplication]:
 
 def get_event_applications_by_status(event: Event, status=Event.EventStatus) -> Iterable[EventApplication]:
     return event.applications.filter(is_deleted=False, status=status)
+
+
+def get_all_applied_events_of(resident_profile: ResidentProfile) -> Iterable[Event]:
+    return resident_profile.events_applications.filter(is_deleted=False)
