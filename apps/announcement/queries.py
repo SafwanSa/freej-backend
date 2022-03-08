@@ -3,6 +3,7 @@ from django.db.models import Q
 from typing import Iterable
 from core.errors import Error, APIError
 from apps.account.models import User
+from apps.campus.models import Campus, Building
 
 
 def get_all_announcements() -> Iterable[Announcement]:
@@ -29,6 +30,10 @@ def get_all_building_announcements() -> Iterable[BuildingAnnouncement]:
     return BuildingAnnouncement.objects.filter(is_deleted=False)
 
 
+def get_building_announcement(building: Building) -> Iterable[BuildingAnnouncement]:
+    return building.announcements.filter(is_deleted=False)
+
+
 def get_building_announcement_by_id(id: int) -> BuildingAnnouncement:
     try:
         return BuildingAnnouncement.objects.get(id=id)
@@ -45,6 +50,14 @@ def get_campus_announcement_by_id(id: int) -> CampusAnnouncement:
         return CampusAnnouncement.objects.get(id=id)
     except CampusAnnouncement.DoesNotExist:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[CampusAnnouncement._meta.model_name])
+
+
+def get_campus_announcement(campus: Campus) -> Iterable[CampusAnnouncement]:
+    return campus.announcements.filter(is_deleted=False)
+
+
+def get_campus_commercial_announcement(campus: Campus) -> Iterable[CommercialAnnouncement]:
+    return campus.commercial_announcements.filter(is_deleted=False)
 
 
 def get_all_commercial_announcements() -> Iterable[CommercialAnnouncement]:
