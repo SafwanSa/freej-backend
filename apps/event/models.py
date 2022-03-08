@@ -1,6 +1,6 @@
 from django.db import models
 from apps.utility.models import BaseModel
-from apps.campus.models import ResidentProfile
+from apps.campus.models import ResidentProfile, Campus
 from enum import Enum
 from core import utils
 
@@ -18,6 +18,7 @@ class Event(BaseModel):
         Cancelled = 'cancelled'
         Finished = 'finished'
     host = models.ForeignKey(ResidentProfile, on_delete=models.CASCADE, related_name='hosted_events')
+    campus = models.ForeignKey(Campus, on_delete=models.CASCADE, related_name='events')
     type = models.CharField(max_length=30, choices=utils.create_choices_from_enum(EventType))
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -31,4 +32,5 @@ class EventApplication(BaseModel):
         Joined = 'joined'
         Cancelled = 'cancelled'
     resident = models.ForeignKey(ResidentProfile, on_delete=models.CASCADE, related_name='applied_events')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='applications')
     status = models.CharField(max_length=30, choices=utils.create_choices_from_enum(ApplicationStatus))
