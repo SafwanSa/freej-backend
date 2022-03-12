@@ -12,5 +12,5 @@ _PHONE_REGEX = RegexValidator(
 )
 
 _STUDENT_ID_REGEX = RegexValidator(
-    regex=r"^[0-9]*$", message=_("Username is a student id. (e.g. 201477960)"),
+    regex=r"^(([A-z][0-9]+)|([0-9]+))$", message=_("Username is a student id. (e.g. s201477960 or t201022347)"),
 )

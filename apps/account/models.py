@@ -13,7 +13,7 @@ class GroupEnum(Enum):
 
 
 class User(AbstractUser):
-    username = models.CharField(max_length=9, unique=True, validators=[_STUDENT_ID_REGEX])
+    username = models.CharField(max_length=10, unique=True, validators=[_STUDENT_ID_REGEX])
     email = models.EmailField()
     mobile_number = models.CharField(max_length=10, validators=[_PHONE_REGEX], null=True, blank=True)
     first_name = models.CharField(max_length=255, null=True, blank=True)
@@ -33,5 +33,5 @@ class User(AbstractUser):
         return self.username
 
     def save(self, *args, **kwargs):
-        self.email = f's{self.username}@kfupm.edu.sa'
+        self.email = f'{self.username}@kfupm.edu.sa'
         return super().save(*args, **kwargs)
