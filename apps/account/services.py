@@ -4,6 +4,7 @@ from core.errors import APIError, Error
 from . import queries
 from django.contrib.auth import password_validation
 from apps.notification.services import NotificationService, NotificationType
+from apps.account.models import GroupEnum, User
 
 
 class AccountService:
@@ -11,12 +12,10 @@ class AccountService:
 
 
 class AuthService:
-    pass
-    """
 
     @staticmethod
-    def optain_customer_access_token(user: User, token: dict) -> dict:
-        if not user.groups.filter(name=GroupEnum.Customer.value).exists():
+    def optain_resident_access_token(user: User, token: dict) -> dict:
+        if not user.groups.filter(name=GroupEnum.Resident.value).exists():
             raise APIError(Error.NO_ACTIVE_ACCOUNT)
         token['roles'] = list(user.groups.all().values())
         return token
@@ -26,9 +25,7 @@ class AuthService:
         if user.is_blocked:
             raise APIError(Error.BLOCKED_USER)
 
-        if group == GroupEnum.Customer:
-            return AuthService.optain_customer_access_token(user=user, token=token)
+        if group == GroupEnum.Resident:
+            return AuthService.optain_resident_access_token(user=user, token=token)
         else:
             raise APIError(Error.NO_ACTIVE_ACCOUNT)
-
-    """
