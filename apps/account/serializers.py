@@ -2,6 +2,7 @@ from .models import *
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .services import AuthService
+from core.validators import _STUDENT_ID_REGEX
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -24,4 +25,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class RegisterSerializer(serializers.Serializer):
-    pass
+    room_id = serializers.IntegerField()
+    username = serializers.RegexField(regex=_STUDENT_ID_REGEX.regex)
+    password = serializers.CharField()
+
+
+class ConfirmRegisterSerializer(serializers.Serializer):
+    room_id = serializers.IntegerField()
+    username = serializers.RegexField(regex=_STUDENT_ID_REGEX.regex)
+    password = serializers.CharField()
+    otp = serializers.CharField(max_length=4)

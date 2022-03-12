@@ -55,7 +55,22 @@
             "is_system": true,
             "is_private": true,
             "tag": "notification"
+        },
+        {
+            "key": "OTP_EXPIRATION",
+            "value": "300",
+            "description": "The number of seconds the OTP will expire after.",
+            "is_system": true,
+            "is_private": true,
+            "tag": "notification"
+        },
+        {
+            "key": "OTP_WAITING_PERIOD",
+            "value": "60",
+            "description": "The number of seconds the user can request another OTP.",
+            "is_system": true,
+            "is_private": true,
+            "tag": "notification"
         }
-
     ]
 }
