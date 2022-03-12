@@ -10,18 +10,18 @@ from django.utils.translation import gettext_lazy as _
 from core.errors import Error, APIError
 from rest_framework.pagination import PageNumberPagination
 
+# class UserView(ListAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
+#     description = "This endpoint return the list of users"
 
-class UserView(ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    description = "This endpoint return the list of users"
+
+class RegisterView(APIView):
+    pass
 
 
-class ExampleErrorView(APIView):
-
-    def get(self, request):
-        raise APIError(Error._DEFAULT_MESSAGE, extra=['This is a default error message. Wehoo!'])
-        return Response({})
+class ComfirmRegisterView(APIView):
+    pass
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
