@@ -12,18 +12,18 @@ from django.contrib.auth.models import Group
 class ResidentService:
 
     @staticmethod
-    def create_resident_profile(username: str, password: str, otp: str, room_id: int) -> User:
+    def create_resident_profile(email: str, password: str, otp: str, room_id: int) -> User:
         # OTP Check
-        otp = AuthService.check_otp(username, otp)
+        otp = AuthService.check_otp(username=email, otp=otp)
         # Register the user again for validation again
         AccountService.register_resident(
-            username=username,
+            username=email,
             password=password,
             room_id=room_id,
             send_otp=False,
         )
         # Create user account
-        user = AccountService.create_account(username, password)
+        user = AccountService.create_account(username=email, password=password)
         # Assgin the user to a group
         group, created = Group.objects.get_or_create(name=GroupEnum.Resident.value)
         group.user_set.add(user)

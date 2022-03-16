@@ -6,6 +6,7 @@ from apps.account.models import User
 class Campus(BaseModel):
     name_ar = models.CharField(max_length=100)
     name_en = models.CharField(max_length=100)
+    email_domain = models.CharField(max_length=50, null=True, blank=True)
     # TODO: Add location_url?
     # TODO: Add image?
 

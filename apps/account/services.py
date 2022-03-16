@@ -16,9 +16,9 @@ class AccountService:
         return users.exists()
 
     @staticmethod
-    def register_resident(username: str, password: str, room_id: int, send_otp: bool = True) -> OTP:
+    def register_resident(email: str, password: str, room_id: int, send_otp: bool = True) -> OTP:
         # Check if user exists
-        account_exist = AccountService.does_account_exist(username)
+        account_exist = AccountService.does_account_exist(username=email)
         if account_exist:
             raise APIError(Error.ACCOUNT_ALREADY_EXIST)
 
@@ -27,14 +27,14 @@ class AccountService:
 
         # Validate password
         dummy_account = User(
-            username=username,
+            username=email,
             is_superuser=False
         )
         password_validation.validate_password(password, dummy_account)
 
         # Request OTP
         if send_otp:
-            otp = AuthService.request_otp(username)
+            otp = AuthService.request_otp(username=email)
             return otp
         return None
 

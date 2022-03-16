@@ -26,12 +26,12 @@ class UserSerializer(serializers.ModelSerializer):
 
 class RegisterSerializer(serializers.Serializer):
     room_id = serializers.IntegerField()
-    username = serializers.RegexField(regex=_STUDENT_ID_REGEX.regex)
+    email = serializers.EmailField()
     password = serializers.CharField()
 
 
 class ConfirmRegisterSerializer(serializers.Serializer):
     room_id = serializers.IntegerField()
-    username = serializers.RegexField(regex=_STUDENT_ID_REGEX.regex)
+    email = serializers.EmailField()
     password = serializers.CharField()
     otp = serializers.CharField(max_length=4)
