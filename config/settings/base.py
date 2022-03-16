@@ -238,6 +238,7 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": False,
     "AUTH_HEADER_TYPES": ('Bearer'),
+    "UPDATE_LAST_LOGIN": True
 }
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup

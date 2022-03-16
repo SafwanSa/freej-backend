@@ -1,6 +1,4 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from enum import Enum
 from core.validators import _PHONE_REGEX, _STUDENT_ID_REGEX
@@ -12,6 +10,12 @@ from django.contrib.auth.models import (
     AbstractBaseUser, PermissionsMixin, BaseUserManager,
 )
 from django.utils import timezone
+
+
+class GroupEnum(Enum):
+    Admin = 'Admin'
+    Resident = 'Resident'
+    Supervisor = 'Supervisor'
 
 
 class UserManager(BaseUserManager):
@@ -44,22 +48,16 @@ class UserManager(BaseUserManager):
         return self._create_user(username, password, **extra_fields)
 
 
-class GroupEnum(Enum):
-    Admin = 'Admin'
-    Resident = 'Resident'
-    Supervisor = 'Supervisor'
-
-
 class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
-        verbose_name = _("user")
-        verbose_name_plural = _("users")
+        verbose_name = "user"
+        verbose_name_plural = "users"
 
     username = models.EmailField(unique=True)
     mobile_number = models.CharField(max_length=10, validators=[_PHONE_REGEX], null=True, blank=True)
     first_name = models.CharField(max_length=255, null=True, blank=True)
     last_name = models.CharField(max_length=255, null=True, blank=True)
-    date_joined = models.DateTimeField(default=timezone.now,)
+    date_joined = models.DateTimeField(default=timezone.now)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
@@ -86,7 +84,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class OTP(BaseModel):
-    username = models.CharField(max_length=10, validators=[_STUDENT_ID_REGEX])
+    username = models.EmailField()
     is_active = models.BooleanField(default=True)
     otp = models.CharField(max_length=4)
     expiration_date = models.DateTimeField()

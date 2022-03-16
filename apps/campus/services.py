@@ -17,7 +17,7 @@ class ResidentService:
         otp = AuthService.check_otp(username=email, otp=otp)
         # Register the user again for validation again
         AccountService.register_resident(
-            username=email,
+            email=email,
             password=password,
             room_id=room_id,
             send_otp=False,

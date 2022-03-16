@@ -6,6 +6,7 @@ from django.contrib.auth import password_validation
 from apps.notification.services import NotificationService, NotificationType
 from apps.account.models import GroupEnum, User
 from apps.campus import queries as campusQueries
+from apps.campus.models import Campus
 
 
 class AccountService:
@@ -16,6 +17,13 @@ class AccountService:
         return users.exists()
 
     @staticmethod
+    def validate_domain(email: str, campus: Campus) -> None:
+        user_domain = email.split('@')[1]
+        campus_domain = campus.email_domain
+        if campus_domain and user_domain != campus_domain:
+            raise APIError(Error.INVALID_DOMAIN)
+
+    @staticmethod
     def register_resident(email: str, password: str, room_id: int, send_otp: bool = True) -> OTP:
         # Check if user exists
         account_exist = AccountService.does_account_exist(username=email)
@@ -24,7 +32,8 @@ class AccountService:
 
         # Get room. if not exist, raise an error
         room = campusQueries.get_room_by_id(id=room_id)
-
+        # If the campus has a domain, validate it against the user's email
+        AccountService.validate_domain(email=email, campus=room.building.campus)
         # Validate password
         dummy_account = User(
             username=email,
@@ -47,6 +56,7 @@ class AccountService:
         password_validation.validate_password(password, new_account)
         new_account.set_password(password)
         new_account.is_active = True
+        new_account.is_email_verified = True
         new_account.save()
         return new_account
 

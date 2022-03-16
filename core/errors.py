@@ -19,6 +19,10 @@ class Error(Enum):
     INVALID_OTP = {'code': -408, 'detail': _('OTP is invalid!')}
     UNSUPPORTED_LANGUAGE = {'code': -487, 'detail': _('Provided language is unsupported!')}
     NOT_ALLOWED_TO_REQUEST_OTP = {'code': -487, 'detail': _('You have already requested an OTP, please wait!')}
+    INVALID_DOMAIN = {
+        'code': -788,
+        'detail': _("Your email's domain does not match with selected campus domain!")}
+    ACCOUNT_ALREADY_EXIST = {'code': -408, 'detail': _('Account with this email already exist!')}
 
 
 class APIError(Exception):
