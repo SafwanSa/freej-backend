@@ -10,6 +10,9 @@ class Campus(BaseModel):
     # TODO: Add location_url?
     # TODO: Add image?
 
+    def __str__(self) -> str:
+        return self.name_en
+
 
 class Building(BaseModel):
     campus = models.ForeignKey(Campus, on_delete=models.CASCADE, related_name='buildings')
@@ -24,10 +27,16 @@ class Building(BaseModel):
         related_name='supervised_building')
     whatsApp_link = models.URLField(null=True, blank=True)
 
+    def __str__(self) -> str:
+        return f'{self.campus.name_en}-{self.name}'
+
 
 class Room(BaseModel):
     building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name='rooms')
     name = models.CharField(max_length=10)
+
+    def __str__(self) -> str:
+        return f'{self.building}-{self.name}'
 
 
 class ResidentProfile(BaseModel):
