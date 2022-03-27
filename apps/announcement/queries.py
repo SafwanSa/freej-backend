@@ -30,7 +30,7 @@ def get_all_building_announcements() -> Iterable[BuildingAnnouncement]:
     return BuildingAnnouncement.objects.filter(is_deleted=False)
 
 
-def get_building_announcement(building: Building) -> Iterable[BuildingAnnouncement]:
+def get_building_announcements(building: Building) -> Iterable[BuildingAnnouncement]:
     return building.announcements.filter(is_deleted=False)
 
 
@@ -52,11 +52,11 @@ def get_campus_announcement_by_id(id: int) -> CampusAnnouncement:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[CampusAnnouncement._meta.model_name])
 
 
-def get_campus_announcement(campus: Campus) -> Iterable[CampusAnnouncement]:
+def get_campus_announcements(campus: Campus) -> Iterable[CampusAnnouncement]:
     return campus.announcements.filter(is_deleted=False)
 
 
-def get_campus_commercial_announcement(campus: Campus) -> Iterable[CommercialAnnouncement]:
+def get_campus_commercial_announcements(campus: Campus) -> Iterable[CommercialAnnouncement]:
     return campus.commercial_announcements.filter(is_deleted=False)
 
 

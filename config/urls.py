@@ -40,6 +40,7 @@ urlpatterns = [
     # path('auth/', include('djoser.urls.jwt')),
     path(f'api/{API_VERSION}/auth/', include('apps.account.urls')),
     path(f'api/{API_VERSION}/campuses/', include('apps.campus.urls')),
+    path(f'api/{API_VERSION}/announcements/', include('apps.announcement.urls')),
     path(f'api/{API_VERSION}/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('admin/', admin.site.urls),
 ]
