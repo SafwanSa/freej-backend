@@ -11,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from core.errors import Error, APIError
 from rest_framework.pagination import PageNumberPagination
 from .services import *
+from apps.campus.serializers import ResidentProfileSerializer
 
 
 class RegisterView(APIView):
@@ -29,8 +30,8 @@ class ConfirmRegisterView(APIView):
     def post(self, request):
         serializer = ConfirmRegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = ResidentService.create_resident_profile(**serializer.data)
-        return Response(UserSerializer(user).data)
+        resident_profile = ResidentService.create_resident_profile(**serializer.data)
+        return Response(ResidentProfileSerializer(resident_profile).data)
 
 
 class ResidentTokenObtainPairView(TokenObtainPairView):

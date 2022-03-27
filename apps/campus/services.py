@@ -12,7 +12,7 @@ from django.contrib.auth.models import Group
 class ResidentService:
 
     @staticmethod
-    def create_resident_profile(email: str, password: str, otp: str, room_id: int) -> User:
+    def create_resident_profile(email: str, password: str, otp: str, room_id: int) -> ResidentProfile:
         # OTP Check
         otp = AuthService.check_otp(username=email, otp=otp)
         # Register the user again for validation again
@@ -35,4 +35,4 @@ class ResidentService:
             is_supervisor=False,
         )
         # TODO: Send notification that account was created
-        return user
+        return new_resident_profile
