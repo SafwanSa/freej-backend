@@ -6,6 +6,16 @@ from rest_framework.permissions import IsAuthenticated
 from django.utils.translation import gettext_lazy as _
 from core.errors import Error, APIError
 from . import queries
+from .permissions import ResidentProfileAccess
+
+
+class ResidentProfileView(APIView):
+    permission_classes = [IsAuthenticated, ResidentProfileAccess]
+
+    def get(self, request):
+        resident_profile = queries.get_resident_profile_by(user=request.user)
+        serializer = ResidentProfileSerializer(resident_profile)
+        return Response(serializer.data)
 
 
 class CampusesView(APIView):
