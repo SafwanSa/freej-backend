@@ -5,9 +5,11 @@ from core.errors import Error, APIError
 from apps.account.models import User
 from apps.campus.models import Campus, Building
 
+# TODO: Order by date
+
 
 def get_all_announcements() -> Iterable[Announcement]:
-    return Announcement.objects.filter(is_deleted=False)
+    return Announcement.objects.filter(is_deleted=False).order_by('-created_at')
 
 
 def get_announcement_by_id(id: int) -> Announcement:
@@ -19,19 +21,19 @@ def get_announcement_by_id(id: int) -> Announcement:
 
 def get_announcements_by(sender: User, type: Announcement.AnnouncementType) -> Iterable[Announcement]:
     if type == Announcement.AnnouncementType.Campus:
-        return CampusAnnouncement.objects.filter(sender=sender, is_deleted=False)
+        return CampusAnnouncement.objects.filter(sender=sender, is_deleted=False).order_by('-created_at')
     elif type == Announcement.AnnouncementType.Building:
-        return BuildingAnnouncement.objects.filter(sender=sender, is_deleted=False)
+        return BuildingAnnouncement.objects.filter(sender=sender, is_deleted=False).order_by('-created_at')
     else:
-        return CommercialAnnouncement.objects.filter(sender=sender, is_deleted=False)
+        return CommercialAnnouncement.objects.filter(sender=sender, is_deleted=False).order_by('-created_at')
 
 
 def get_all_building_announcements() -> Iterable[BuildingAnnouncement]:
-    return BuildingAnnouncement.objects.filter(is_deleted=False)
+    return BuildingAnnouncement.objects.filter(is_deleted=False).order_by('-created_at')
 
 
 def get_building_announcements(building: Building) -> Iterable[BuildingAnnouncement]:
-    return building.announcements.filter(is_deleted=False)
+    return building.announcements.filter(is_deleted=False).order_by('-created_at')
 
 
 def get_building_announcement_by_id(id: int) -> BuildingAnnouncement:
@@ -42,7 +44,7 @@ def get_building_announcement_by_id(id: int) -> BuildingAnnouncement:
 
 
 def get_all_campus_announcements() -> Iterable[CampusAnnouncement]:
-    return CampusAnnouncement.objects.filter(is_deleted=False)
+    return CampusAnnouncement.objects.filter(is_deleted=False).order_by('-created_at')
 
 
 def get_campus_announcement_by_id(id: int) -> CampusAnnouncement:
@@ -53,15 +55,15 @@ def get_campus_announcement_by_id(id: int) -> CampusAnnouncement:
 
 
 def get_campus_announcements(campus: Campus) -> Iterable[CampusAnnouncement]:
-    return campus.announcements.filter(is_deleted=False)
+    return campus.announcements.filter(is_deleted=False).order_by('-created_at')
 
 
 def get_campus_commercial_announcements(campus: Campus) -> Iterable[CommercialAnnouncement]:
-    return campus.commercial_announcements.filter(is_deleted=False)
+    return campus.commercial_announcements.filter(is_deleted=False).order_by('-created_at')
 
 
 def get_all_commercial_announcements() -> Iterable[CommercialAnnouncement]:
-    return CommercialAnnouncement.objects.filter(is_deleted=False)
+    return CommercialAnnouncement.objects.filter(is_deleted=False).order_by('-created_at')
 
 
 def get_commercial_announcement_by_id(id: int) -> CommercialAnnouncement:

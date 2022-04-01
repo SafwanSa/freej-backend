@@ -19,7 +19,8 @@ class CampusAndBuildingAnnouncementsView(APIView):
         building = resident_profile.room.building
         building_announcements = queries.get_building_announcements(building=building)
         campus_announcements = queries.get_campus_announcements(campus=building.campus)
-        serializer = AnnouncementSerializer(building_announcements.union(campus_announcements), many=True)
+        serializer = AnnouncementSerializer(building_announcements.union(
+            campus_announcements).order_by('-created_at'), many=True)
         return Response(serializer.data)
 
 
