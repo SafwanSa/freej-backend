@@ -48,3 +48,14 @@ class SendAnnouncementView(APIView):
             **serializer.validated_data
         )
         return Response(BuildingAnnouncementSerializer(announcement).data)
+
+
+class DeleteAnnouncementView(APIView):
+    permission_classes = [IsAuthenticated, SupervisorAccess]
+
+    def delete(self, request, pk):
+        resident_profile = campusQueries.get_resident_profile_by(user=request.user)
+        announcement = queries.get_building_announcement_by_id(id=pk)
+        self.check_object_permissions(request=request, obj=announcement.building)
+        announcement = AnnouncementService.delete_building_announcement(announcement=announcement)
+        return Response(BuildingAnnouncementSerializer(announcement).data)

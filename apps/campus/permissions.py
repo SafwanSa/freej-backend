@@ -40,4 +40,6 @@ class SupervisorAccess(BasePermission):
             return False
 
     def has_object_permission(self, request, view, obj):
+        if request.user.resident_profile.room.building == obj:
+            return True
         return False

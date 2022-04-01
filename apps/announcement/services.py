@@ -13,7 +13,7 @@ class AnnouncementService:
 
     @staticmethod
     def send_building_announcement(resident_profile: ResidentProfile, building: Building,
-                                   title: str, body: str) -> Announcement:
+                                   title: str, body: str) -> BuildingAnnouncement:
         new_announcement = BuildingAnnouncement.objects.create(
             sender=resident_profile.user,
             building=building,
@@ -22,3 +22,9 @@ class AnnouncementService:
         )
         # TODO: Send FCM notifications to building's residents
         return new_announcement
+
+    @staticmethod
+    def delete_building_announcement(announcement=BuildingAnnouncement) -> BuildingAnnouncement:
+        announcement.is_deleted = True
+        announcement.save()
+        return announcement
