@@ -116,3 +116,20 @@ class AuthService:
             return AuthService.optain_resident_access_token(user=user, token=token)
         else:
             raise APIError(Error.NO_ACTIVE_ACCOUNT)
+
+    @staticmethod
+    def request_change_password_otp(username: str) -> OTP:
+        account_exist = AccountService.does_account_exist(username=username)
+        otp = None
+        if account_exist:
+            otp = AuthService.request_otp(username=username)
+        return otp
+
+    @staticmethod
+    def change_password(username: str, new_password: str) -> User:
+        user = queries.get_users_with(username=username).first()
+        if user:
+            password_validation.validate_password(new_password, user)
+            user.set_password(new_password)
+            user.save()
+        return user

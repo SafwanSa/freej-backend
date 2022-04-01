@@ -44,3 +44,35 @@ class ResidentTokenObtainPairView(TokenObtainPairView):
 class ResidentTokenRefreshView(TokenRefreshView):
     def post(self, request):
         return super().post(request)
+
+# ------------------------------- Forget Password Views -------------------------------
+
+
+class RequestOTPView(APIView):
+
+    def post(self, request):
+        serializer = RequestOTPSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        otp = AuthService.request_change_password_otp(**serializer.data)
+        return Response({
+            'message': _('OTP is sent. You can request a new one after {} seconds').format(Conf.OTP_WAITING_PERIOD()),
+            'waiting_seconds': Conf.OTP_WAITING_PERIOD()
+        })
+
+
+class CheckOTPView(APIView):
+
+    def post(self, request):
+        serializer = CheckOTPSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        otp = AuthService.check_otp(**serializer.data)
+        return Response({'message': _('OTP is valid')})
+
+
+class ChangePasswordView(APIView):
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = AuthService.change_password(**serializer.data)
+        return Response({'message': _('Password changed successfully')})

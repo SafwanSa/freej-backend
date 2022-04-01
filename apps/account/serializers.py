@@ -2,7 +2,7 @@ from .models import *
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .services import AuthService
-from core.validators import _STUDENT_ID_REGEX
+from core import validators
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -35,3 +35,19 @@ class ConfirmRegisterSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
     otp = serializers.CharField(max_length=4)
+
+
+# ------------------------------- Forget Password Serializers -------------------------------
+
+class RequestOTPSerializer(serializers.Serializer):
+    username = serializers.EmailField()
+
+
+class CheckOTPSerializer(serializers.Serializer):
+    username = serializers.EmailField()
+    otp = serializers.CharField(max_length=4)
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    username = serializers.EmailField()
+    new_password = serializers.CharField()
