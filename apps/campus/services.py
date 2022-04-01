@@ -36,3 +36,12 @@ class ResidentService:
         )
         # TODO: Send notification that account was created
         return new_resident_profile
+
+    @staticmethod
+    def edit_profile(resident_profile: ResidentProfile, first_name: str = None,
+                     last_name: str = None, mobile_number: str = None) -> ResidentProfile:
+        resident_profile.user.first_name = first_name
+        resident_profile.user.last_name = last_name
+        resident_profile.user.mobile_number = mobile_number
+        resident_profile.save()
+        return resident_profile

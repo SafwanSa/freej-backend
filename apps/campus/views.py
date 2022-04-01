@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from core.errors import Error, APIError
 from . import queries
 from .permissions import ResidentProfileAccess
+from .services import ResidentService
 
 
 class ResidentProfileView(APIView):
@@ -16,6 +17,13 @@ class ResidentProfileView(APIView):
         resident_profile = queries.get_resident_profile_by(user=request.user)
         serializer = ResidentProfileSerializer(resident_profile)
         return Response(serializer.data)
+
+    def patch(self, request):
+        resident_profile = queries.get_resident_profile_by(user=request.user)
+        serializer = EditProfileSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        resident_profile = ResidentService.edit_profile(resident_profile=resident_profile, **serializer.validated_data)
+        return Response(ResidentProfileSerializer(resident_profile).data)
 
 
 class CampusesView(APIView):

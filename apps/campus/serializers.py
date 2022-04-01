@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import *
 from django.contrib.auth.models import Group
 from . import queries
+from core.validators import _PHONE_REGEX
 
 
 class CampusSerializer(serializers.ModelSerializer):
@@ -72,3 +73,9 @@ class ResidentProfileSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['account'] = representation.pop('user')
         return representation
+
+
+class EditProfileSerializer(serializers.Serializer):
+    first_name = serializers.CharField(allow_null=True)
+    last_name = serializers.CharField(allow_null=True)
+    mobile_number = serializers.RegexField(_PHONE_REGEX.regex, allow_null=True)
