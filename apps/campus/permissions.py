@@ -21,3 +21,23 @@ class ResidentProfileAccess(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return False
+
+
+class SupervisorAccess(BasePermission):
+    message = _('User has no supervisor role or the supervisor permission is disabled.')
+
+    def has_permission(self, request, view):
+        user = request.user
+        if user.is_blocked:
+            self.message = _('User is banned!')
+            return False
+        try:
+            if user.groups.filter(name=GroupEnum.Supervisor.value).exists(
+            ) and user.resident_profile and user.resident_profile.is_supervisor:
+                return True
+            return False
+        except ResidentProfile.DoesNotExist:
+            return False
+
+    def has_object_permission(self, request, view, obj):
+        return False

@@ -24,3 +24,8 @@ class CommercialAnnouncementSerializer(serializers.ModelSerializer):
     class Meta:
         model = CommercialAnnouncement
         exclude = ['impressions']
+
+
+class SendBuildingAnnouncementSerializer(serializers.Serializer):
+    title = serializers.CharField()
+    body = serializers.CharField()

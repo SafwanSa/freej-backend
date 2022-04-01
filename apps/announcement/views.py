@@ -7,6 +7,8 @@ from django.utils.translation import gettext_lazy as _
 from core.errors import Error, APIError
 from . import queries
 from apps.campus import queries as campusQueries
+from apps.campus.permissions import SupervisorAccess
+from .services import AnnouncementService
 
 
 class CampusAndBuildingAnnouncementsView(APIView):
@@ -30,3 +32,19 @@ class CommercialAnnouncementsView(APIView):
         commercial_announcements = queries.get_campus_commercial_announcements(campus=campus)
         serializer = CommercialAnnouncementSerializer(commercial_announcements, many=True)
         return Response(serializer.data)
+
+
+class SendAnnouncementView(APIView):
+    permission_classes = [IsAuthenticated, SupervisorAccess]
+
+    def post(self, request):
+        resident_profile = campusQueries.get_resident_profile_by(user=request.user)
+        building = resident_profile.room.building
+        serializer = SendBuildingAnnouncementSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        announcement = AnnouncementService.send_building_announcement(
+            resident_profile=resident_profile,
+            building=building,
+            **serializer.validated_data
+        )
+        return Response(BuildingAnnouncementSerializer(announcement).data)

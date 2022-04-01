@@ -40,7 +40,7 @@ class Room(BaseModel):
 
 
 class ResidentProfile(BaseModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='resident_profile')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='resident_profile')
     # TODO: Add photo
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='residents')
     is_supervisor = models.BooleanField(default=False)
