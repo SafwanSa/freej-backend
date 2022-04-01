@@ -17,6 +17,7 @@ class AnnouncementService:
         new_announcement = BuildingAnnouncement.objects.create(
             sender=resident_profile.user,
             building=building,
+            type=BuildingAnnouncement.AnnouncementType.Building.value,
             title=title,
             body=body
         )
