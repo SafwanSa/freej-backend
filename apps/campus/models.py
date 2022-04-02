@@ -1,6 +1,8 @@
 from apps.utility.models import BaseModel
 from django.db import models
 from apps.account.models import User
+from enum import Enum
+from core import utils
 
 
 class Campus(BaseModel):
@@ -44,3 +46,22 @@ class ResidentProfile(BaseModel):
     # TODO: Add photo
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='residents')
     is_supervisor = models.BooleanField(default=False)
+
+
+class MaintenanceIssue(BaseModel):
+    class MaintenanceIssueType(Enum):
+        Halls = 'halls'
+        Rooms = 'Rooms'
+        Bathrooms = 'bathroom'
+        Other = 'other'
+
+    class MaintenanceIssueStatus(Enum):
+        Pending = 'Pending'
+        Canceled = 'canceled'
+        Fixed = 'fixed'
+    reported_by = models.ForeignKey(ResidentProfile, on_delete=models.CASCADE, related_name='reported_issues')
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name='issues')
+    type = models.CharField(max_length=30, choices=utils.create_choices_from_enum(MaintenanceIssueType))
+    description = models.TextField()
+    reported_fixed = models.IntegerField(default=0)
+    status = models.CharField(max_length=30, choices=utils.create_choices_from_enum(MaintenanceIssueStatus))

@@ -46,3 +46,14 @@ def get_resident_profile_by(user: User) -> ResidentProfile:
 
 def get_room_residents(room: Room) -> Iterable[ResidentProfile]:
     return room.residents.filter(is_deleted=False)
+
+
+def get_issue_by_id(id: int) -> MaintenanceIssue:
+    try:
+        return MaintenanceIssue.objects.get(id=id)
+    except MaintenanceIssue.DoesNotExist:
+        raise APIError(Error.INSTANCE_NOT_FOUND, extra=[MaintenanceIssue._meta.model_name])
+
+
+def get_building_issues(building: Building) -> Iterable[MaintenanceIssue]:
+    return building.issues.filter(is_deleted=False).order_by('-created_at')

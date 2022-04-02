@@ -45,3 +45,25 @@ class ResidentService:
         resident_profile.user.mobile_number = mobile_number
         resident_profile.save()
         return resident_profile
+
+
+class BuildingService:
+
+    @staticmethod
+    def report_issue(resident_profile: ResidentProfile, building: Building,
+                     type: str, description: str) -> MaintenanceIssue:
+        new_issue = MaintenanceIssue.objects.create(
+            reported_by=resident_profile,
+            building=building,
+            type=type,
+            description=description,
+            status=MaintenanceIssue.MaintenanceIssueStatus.Pending.value
+        )
+        return new_issue
+
+    @staticmethod
+    def report_issue_with_fix(issue: MaintenanceIssue) -> MaintenanceIssue:
+        # TODO: Should we allow the resident to vote only once?
+        issue.reported_fixed = issue.reported_fixed + 1
+        issue.save()
+        return issue
