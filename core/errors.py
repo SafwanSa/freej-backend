@@ -23,6 +23,8 @@ class Error(Enum):
         'code': -788,
         'detail': _("Your email's domain does not match with selected campus domain!")}
     ACCOUNT_ALREADY_EXIST = {'code': -408, 'detail': _('Account with this email already exist!')}
+    EVENT_HOST_ONLY = {'code': -569, 'detail': _("Only event's host can perform this action!")}
+    NO_EVENT_APPLICATION = {'code': -560, 'detail': _("You did not apply for this event!")}
 
 
 class APIError(Exception):
