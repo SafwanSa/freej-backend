@@ -5,9 +5,21 @@ from . import queries
 
 
 class EventSerializer(serializers.ModelSerializer):
+
+    application_status = serializers.SerializerMethodField()
+
     class Meta:
         model = Event
         fields = '__all__'
+
+    def get_application_status(self, obj):
+        if self.context.get('show_application_status'):
+            resident_profile = self.context.get('resident_profile')
+            applications = queries.get_events_applications_by(resident_profile=resident_profile, event=obj)
+            if applications.exists():
+                application = applications.first()
+                return application.status
+        return None
 
 
 class EventApplicationSerializer(serializers.ModelSerializer):

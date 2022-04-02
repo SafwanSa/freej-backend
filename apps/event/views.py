@@ -19,12 +19,22 @@ class EventViewset(viewsets.ViewSet):
         resident_profile = campusQueries.get_resident_profile_by(user=request.user)
         campus = resident_profile.room.building.campus
         events = queries.get_all_campus_events(campus=campus)
-        serializer = EventSerializer(events, many=True)
+        serializer = EventSerializer(
+            events,
+            many=True,
+            context={
+                'show_application_status': True,
+                'resident_profile': resident_profile})
         return Response(serializer.data)
 
     def retrieve(self, request, pk):
+        resident_profile = campusQueries.get_resident_profile_by(user=request.user)
         event = queries.get_event_by_id(id=pk)
-        serializer = EventSerializer(event)
+        serializer = EventSerializer(
+            event,
+            context={
+                'show_application_status': True,
+                'resident_profile': resident_profile})
         return Response(serializer.data)
 
     def create(self, request):
