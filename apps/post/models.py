@@ -7,16 +7,38 @@ from apps.campus.models import ResidentProfile
 
 
 class Post(BaseModel):
+    class PostType(Enum):
+        Offer = 'offer'
+        Request = 'request'
+    campus = models.ForeignKey('campus.campus', on_delete=models.CASCADE, related_name='posts')
+    type = models.CharField(max_length=20, choices=utils.create_choices_from_enum(PostType))
+    owner = models.ForeignKey(ResidentProfile, on_delete=models.CASCADE, related_name='created_posts')
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
-    created_by = models.ForeignKey(ResidentProfile, on_delete=models.CASCADE, related_name='created_posts')
-    # TODO: images =
-
-    class Meta:
-        abstract = True
-
-
-class Offer(Post):
-    rating = models.FloatField(default=0)
-    num_of_raters = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
+
+
+class PostImage(BaseModel):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
+    #TODO: image = models.ImageField()
+
+
+class Review(BaseModel):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='reviews')
+    reviewer = models.ForeignKey(ResidentProfile, on_delete=models.CASCADE, related_name='reviews')
+    rating = models.FloatField(default=0)
+    comment = models.TextField(null=True, blank=True)
+
+
+class Application(BaseModel):
+    class ApplicationStatus(Enum):
+        Pending = 'pending'
+        Accepted = 'accepted'
+        Rejected = 'rejected'
+        Cancelled = 'cancelled'
+        Completed = 'completed'
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='applications')
+    status = models.CharField(max_length=20, choices=utils.create_choices_from_enum(ApplicationStatus))
+    status_updated_at = models.DateTimeField(auto_now_add=True)
+    beneficiary = models.ForeignKey(ResidentProfile, on_delete=models.CASCADE)
+    description = models.TextField(null=True, blank=True)
