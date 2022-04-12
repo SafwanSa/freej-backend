@@ -26,3 +26,8 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = '__all__'
+
+
+class CreatePostSerializer(serializers.Serializer):
+    title = serializers.CharField()
+    description = serializers.CharField()

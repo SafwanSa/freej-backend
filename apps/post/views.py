@@ -30,7 +30,11 @@ class OfferViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request):
-        pass
+        resident_profile = campusQueries.get_resident_profile_by(user=request.user)
+        serializer = CreatePostSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        offer = OfferService.create_offer(resident_profile=resident_profile, **serializer.validated_data)
+        return Response(PostSerializer(offer).data)
 
     def partial_update(self, request, pk):
         pass
