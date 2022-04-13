@@ -20,8 +20,16 @@ class OwnerSerializer(serializers.ModelSerializer):
         return representation
 
 
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
+
+
 class PostSerializer(serializers.ModelSerializer):
     owner = OwnerSerializer()
+
+    reviews = ReviewSerializer(many=True)
 
     class Meta:
         model = Post
