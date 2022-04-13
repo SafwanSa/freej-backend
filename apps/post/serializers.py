@@ -31,3 +31,10 @@ class PostSerializer(serializers.ModelSerializer):
 class CreatePostSerializer(serializers.Serializer):
     title = serializers.CharField()
     description = serializers.CharField()
+    # Images
+
+
+class UpdatePostSerializer(serializers.Serializer):
+    title = serializers.CharField(required=False)
+    description = serializers.CharField(required=False)
+    is_active = serializers.BooleanField(required=False)

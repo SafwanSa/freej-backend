@@ -28,6 +28,30 @@ class OfferService(PostService):
         )
         return new_offer
 
+    @staticmethod
+    def update_offer(resident_profile: ResidentProfile, offer: Post, is_active: bool = None,
+                     title: str = None, description: str = None) -> Post:
+        if offer.owner != resident_profile:
+            raise APIError(Error.NOT_OWNER)
+
+        if offer:
+            offer.title = title
+        if description:
+            offer.description = description
+        if is_active is not None:
+            offer.is_active = is_active
+        offer.save()
+        return offer
+
+    @staticmethod
+    def delete_offer(resident_profile: ResidentProfile, offer: Post) -> Post:
+        if offer.owner != resident_profile:
+            raise APIError(Error.NOT_OWNER)
+
+        offer.is_deleted = True
+        offer.save()
+        return offer
+
 
 class RequestService(PostService):
 
