@@ -83,7 +83,8 @@ class RequestViewSet(viewsets.ViewSet):
         rqst = RequestService.update_request(
             resident_profile=resident_profile,
             request=rqst,
-            **serializer.validated_data)
+            **serializer.validated_data
+        )
         return Response(PostSerializer(rqst).data)
 
     def destroy(self, request, pk):
