@@ -56,5 +56,37 @@ class OfferService(PostService):
 class RequestService(PostService):
 
     @staticmethod
-    def create_request():
-        pass
+    def create_request(resident_profile: ResidentProfile, title: str, description: str) -> Post:
+        campus = resident_profile.room.building.campus
+        new_request = Post.objects.create(
+            type=Post.PostType.Request.value,
+            campus=campus,
+            owner=resident_profile,
+            title=title,
+            description=description,
+        )
+        return new_request
+
+    @staticmethod
+    def update_request(resident_profile: ResidentProfile, request: Post, is_active: bool = None,
+                       title: str = None, description: str = None) -> Post:
+        if request.owner != resident_profile:
+            raise APIError(Error.NOT_OWNER)
+
+        if request:
+            request.title = title
+        if description:
+            request.description = description
+        if is_active is not None:
+            request.is_active = is_active
+        request.save()
+        return request
+
+    @staticmethod
+    def delete_request(resident_profile: ResidentProfile, request: Post) -> Post:
+        if request.owner != resident_profile:
+            raise APIError(Error.NOT_OWNER)
+
+        request.is_deleted = True
+        request.save()
+        return request
