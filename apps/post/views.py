@@ -64,15 +64,30 @@ class RequestViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk):
         resident_profile = campusQueries.get_resident_profile_by(user=request.user)
         campus = resident_profile.room.building.campus
-        request = queries.get_campus_post_by_id(campus=campus, id=pk)
-        serializer = PostSerializer(request)
+        rqst = queries.get_campus_post_by_id(campus=campus, id=pk)
+        serializer = PostSerializer(rqst)
         return Response(serializer.data)
 
     def create(self, request):
-        pass
+        resident_profile = campusQueries.get_resident_profile_by(user=request.user)
+        serializer = CreatePostSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        rqst = RequestService.create_request(resident_profile=resident_profile, **serializer.validated_data)
+        return Response(PostSerializer(rqst).data)
 
     def partial_update(self, request, pk):
-        pass
+        resident_profile = campusQueries.get_resident_profile_by(user=request.user)
+        rqst = queries.get_campus_post_by_id(campus=resident_profile.room.building.campus, id=pk)
+        serializer = UpdatePostSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        rqst = RequestService.update_request(
+            resident_profile=resident_profile,
+            request=rqst,
+            **serializer.validated_data)
+        return Response(PostSerializer(rqst).data)
 
     def destroy(self, request, pk):
-        pass
+        resident_profile = campusQueries.get_resident_profile_by(user=request.user)
+        rqst = queries.get_campus_post_by_id(campus=resident_profile.room.building.campus, id=pk)
+        rqst = RequestService.delete_request(resident_profile=resident_profile, request=rqst)
+        return Response(PostSerializer(rqst).data)
