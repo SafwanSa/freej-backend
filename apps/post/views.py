@@ -37,10 +37,18 @@ class OfferViewSet(viewsets.ViewSet):
         return Response(PostSerializer(offer).data)
 
     def partial_update(self, request, pk):
-        pass
+        resident_profile = campusQueries.get_resident_profile_by(user=request.user)
+        offer = queries.get_campus_post_by_id(campus=resident_profile.room.building.campus, id=pk)
+        serializer = UpdatePostSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        offer = OfferService.update_offer(resident_profile=resident_profile, offer=offer, **serializer.validated_data)
+        return Response(PostSerializer(offer).data)
 
     def destroy(self, request, pk):
-        pass
+        resident_profile = campusQueries.get_resident_profile_by(user=request.user)
+        offer = queries.get_campus_post_by_id(campus=resident_profile.room.building.campus, id=pk)
+        offer = OfferService.delete_offer(resident_profile=resident_profile, offer=offer)
+        return Response(PostSerializer(offer).data)
 
 
 class RequestViewSet(viewsets.ViewSet):
