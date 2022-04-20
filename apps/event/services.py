@@ -54,19 +54,32 @@ class EventService:
 
     @staticmethod
     def join_event(resident_profile: ResidentProfile, event: Event) -> EventApplication:
-        new_application = EventApplication.objects.create(
+        # Check if the resident has an application he cancelled
+        application = queries.get_events_applications_by(
             resident_profile=resident_profile,
             event=event,
-            status=EventApplication.ApplicationStatus.Joined.value
-        )
-        return new_application
+            status=None
+        ).first()
+        if application:
+            if application.status == EventApplication.ApplicationStatus.Cancelled.value:
+                application.status = EventApplication.ApplicationStatus.Joined.value
+                application.save()
+            return application
+        else:
+            new_application = EventApplication.objects.create(
+                resident_profile=resident_profile,
+                event=event,
+                status=EventApplication.ApplicationStatus.Joined.value
+            )
+            return new_application
 
     @staticmethod
     def leave_event(resident_profile: ResidentProfile, event: Event) -> EventApplication:
         applications = queries.get_events_applications_by(
             resident_profile=resident_profile,
             event=event,
-            status=EventApplication.ApplicationStatus.Joined)
+            status=EventApplication.ApplicationStatus.Joined
+        )
         if applications.exists():
             application = applications.first()
             application.status = EventApplication.ApplicationStatus.Cancelled.value
