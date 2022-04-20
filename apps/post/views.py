@@ -92,3 +92,16 @@ class RequestViewSet(viewsets.ViewSet):
         rqst = queries.get_campus_post_by_id(campus=resident_profile.room.building.campus, id=pk)
         rqst = RequestService.delete_request(resident_profile=resident_profile, request=rqst)
         return Response(PostSerializer(rqst).data)
+
+
+class ReviewView(APIView):
+    permission_classes = [IsAuthenticated, ResidentProfileAccess]
+
+    def post(self, request, post_id):
+        resident_profile = campusQueries.get_resident_profile_by(user=request.user)
+        campus = resident_profile.room.building.campus
+        post = queries.get_campus_post_by_id(campus=campus, id=post_id)
+        serializer = RateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        review = PostService.rate_post(resident_profile=resident_profile, post=post, **serializer.validated_data)
+        return Response(ReviewSerializer(review).data)

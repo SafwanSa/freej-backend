@@ -10,8 +10,19 @@ from apps.campus.models import ResidentProfile, Campus
 class PostService:
 
     @staticmethod
-    def create_post():
-        pass
+    def rate_post(resident_profile: ResidentProfile, post: Post, rating: int) -> Post:
+        reviews = queries.get_post_reviews(post=post)
+        reviews = reviews.filter(reviewer=resident_profile)
+        if reviews.exists():
+            raise APIError(Error.ALREADY_RATED)
+
+        new_review = Review.objects.create(
+            post=post,
+            reviewer=resident_profile,
+            rating=rating,
+            comment=None
+        )
+        return new_review
 
 
 class OfferService(PostService):
