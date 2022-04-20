@@ -14,7 +14,7 @@ class Event(BaseModel):
         Other = 'other'
 
     class EventStatus(Enum):
-        New = 'new'
+        Open = 'open'
         Cancelled = 'cancelled'
         Finished = 'finished'
     host = models.ForeignKey(ResidentProfile, on_delete=models.CASCADE, related_name='hosted_events')
