@@ -25,6 +25,7 @@ class Error(Enum):
     ACCOUNT_ALREADY_EXIST = {'code': -408, 'detail': _('Account with this email already exist!')}
     EVENT_HOST_ONLY = {'code': -569, 'detail': _("Only event's host can perform this action!")}
     NO_EVENT_APPLICATION = {'code': -560, 'detail': _("You did not apply for this event!")}
+    NOT_OWNER = {'code': -365, 'detail': _("Only the owner can perform this action!")}
 
 
 class APIError(Exception):

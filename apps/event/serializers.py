@@ -2,11 +2,31 @@ from rest_framework import serializers
 from .models import *
 from django.contrib.auth.models import Group
 from . import queries
+from apps.account.models import User
+
+
+class HostSerializer(serializers.ModelSerializer):
+    class HostUserSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = User
+            fields = ['id', 'first_name', 'last_name']
+
+    user = HostUserSerializer()
+
+    class Meta:
+        model = ResidentProfile
+        fields = ['user']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation = representation['user']
+        return representation
 
 
 class EventSerializer(serializers.ModelSerializer):
 
     application_status = serializers.SerializerMethodField()
+    host = HostSerializer()
 
     class Meta:
         model = Event
