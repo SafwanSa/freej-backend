@@ -8,4 +8,5 @@ router.register('requests', views.RequestViewSet, basename='requests')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('<int:post_id>/reviews/', views.ReviewView.as_view()),
 ]

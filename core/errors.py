@@ -26,6 +26,7 @@ class Error(Enum):
     EVENT_HOST_ONLY = {'code': -569, 'detail': _("Only event's host can perform this action!")}
     NO_EVENT_APPLICATION = {'code': -560, 'detail': _("You did not apply for this event!")}
     NOT_OWNER = {'code': -365, 'detail': _("Only the owner can perform this action!")}
+    ALREADY_RATED = {'code': -325, 'detail': _("You have already rated this post!")}
 
 
 class APIError(Exception):
