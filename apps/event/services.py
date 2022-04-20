@@ -24,7 +24,7 @@ class EventService:
             description=description,
             location_url=location_url,
             date=date,
-            status=Event.EventStatus.New.value
+            status=Event.EventStatus.Open.value
         )
         # TODO: Notify all residents of campus
         return new_event
