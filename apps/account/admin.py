@@ -2,13 +2,33 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from .models import *
+import nested_admin
 
-User = get_user_model()
 
-
-@admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    pass
+    model = User
+    list_display = [
+        'username', 'first_name', 'last_name', 'mobile_number', 'get_user_groups', 'date_joined'
+    ]
+
+    list_filter = [
+        'is_superuser',
+        'is_blocked',
+        'date_joined',
+        'last_login'
+    ]
+
+    search_fields = [
+        'username', 'first_name', 'last_name', 'mobile_number'
+    ]
+
+    def get_user_groups(self, obj):
+        groups = []
+        for group in obj.groups.all():
+            groups.append(group.name)
+
+        return ', '.join(groups)
+    get_user_groups.short_description = 'Groups'
 
 
 class OTPAdmin(admin.ModelAdmin):
@@ -16,4 +36,5 @@ class OTPAdmin(admin.ModelAdmin):
     list_display = ['otp', 'username', 'is_active', 'expiration_date']
 
 
+admin.site.register(User, UserAdmin)
 admin.site.register(OTP, OTPAdmin)

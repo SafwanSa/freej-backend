@@ -66,6 +66,7 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "corsheaders",
     "drf_yasg",
+    "nested_admin"
 ]
 
 LOCAL_APPS = [

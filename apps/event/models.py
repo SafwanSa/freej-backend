@@ -26,6 +26,9 @@ class Event(BaseModel):
     date = models.DateTimeField()
     status = models.CharField(max_length=30, choices=utils.create_choices_from_enum(EventStatus))
 
+    def __str__(self) -> str:
+        return f'{self.campus}-{self.name}'
+
 
 class EventApplication(BaseModel):
     class ApplicationStatus(Enum):
