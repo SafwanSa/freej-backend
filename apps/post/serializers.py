@@ -30,19 +30,19 @@ class ReviewSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     owner = OwnerSerializer()
     reviews = ReviewSerializer(many=True)
-    application_status = serializers.SerializerMethodField()
+    application = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = '__all__'
 
-    def get_application_status(self, obj):
+    def get_application(self, obj):
         if self.context.get('show_application_status'):
             resident_profile = self.context.get('resident_profile')
             applications = queries.get_all_post_applications_by(beneficiary=resident_profile, post=obj)
             if applications.exists():
                 application = applications.first()
-                return application.status
+                return {'id': application.id, 'status': application.status}
         return None
 
 
