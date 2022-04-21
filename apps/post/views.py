@@ -19,14 +19,20 @@ class OfferViewSet(viewsets.ViewSet):
         resident_profile = campusQueries.get_resident_profile_by(user=request.user)
         campus = resident_profile.room.building.campus
         offers = queries.get_all_campus_offers(campus=campus)
-        serializer = PostSerializer(offers, many=True)
+        serializer = PostSerializer(offers, many=True, context={
+            'show_application_status': True,
+            'resident_profile': resident_profile
+        })
         return Response(serializer.data)
 
     def retrieve(self, request, pk):
         resident_profile = campusQueries.get_resident_profile_by(user=request.user)
         campus = resident_profile.room.building.campus
         offer = queries.get_campus_post_by_id(campus=campus, id=pk)
-        serializer = PostSerializer(offer)
+        serializer = PostSerializer(offer, context={
+            'show_application_status': True,
+            'resident_profile': resident_profile
+        })
         return Response(serializer.data)
 
     def create(self, request):
@@ -58,14 +64,20 @@ class RequestViewSet(viewsets.ViewSet):
         resident_profile = campusQueries.get_resident_profile_by(user=request.user)
         campus = resident_profile.room.building.campus
         requests = queries.get_all_campus_requests(campus=campus)
-        serializer = PostSerializer(requests, many=True)
+        serializer = PostSerializer(requests, many=True, context={
+            'show_application_status': True,
+            'resident_profile': resident_profile
+        })
         return Response(serializer.data)
 
     def retrieve(self, request, pk):
         resident_profile = campusQueries.get_resident_profile_by(user=request.user)
         campus = resident_profile.room.building.campus
         rqst = queries.get_campus_post_by_id(campus=campus, id=pk)
-        serializer = PostSerializer(rqst)
+        serializer = PostSerializer(rqst, context={
+            'show_application_status': True,
+            'resident_profile': resident_profile
+        })
         return Response(serializer.data)
 
     def create(self, request):
