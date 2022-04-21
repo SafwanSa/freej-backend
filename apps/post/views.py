@@ -9,7 +9,7 @@ from core.errors import Error, APIError
 from . import queries
 from apps.campus import queries as campusQueries
 from apps.campus.permissions import SupervisorAccess, ResidentProfileAccess
-from .services import OfferService, RequestService, PostService
+from .services import PostService
 
 
 class OfferViewSet(viewsets.ViewSet):
@@ -39,7 +39,11 @@ class OfferViewSet(viewsets.ViewSet):
         resident_profile = campusQueries.get_resident_profile_by(user=request.user)
         serializer = CreatePostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        offer = OfferService.create_offer(resident_profile=resident_profile, **serializer.validated_data)
+        offer = PostService.create_post(
+            type=Post.PostType.Offer,
+            resident_profile=resident_profile,
+            **serializer.validated_data
+        )
         return Response(PostSerializer(offer).data)
 
     def partial_update(self, request, pk):
@@ -47,13 +51,13 @@ class OfferViewSet(viewsets.ViewSet):
         offer = queries.get_campus_post_by_id(campus=resident_profile.room.building.campus, id=pk)
         serializer = UpdatePostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        offer = OfferService.update_offer(resident_profile=resident_profile, offer=offer, **serializer.validated_data)
+        offer = PostService.update_post(resident_profile=resident_profile, offer=offer, **serializer.validated_data)
         return Response(PostSerializer(offer).data)
 
     def destroy(self, request, pk):
         resident_profile = campusQueries.get_resident_profile_by(user=request.user)
         offer = queries.get_campus_post_by_id(campus=resident_profile.room.building.campus, id=pk)
-        offer = OfferService.delete_offer(resident_profile=resident_profile, offer=offer)
+        offer = PostService.delete_post(resident_profile=resident_profile, offer=offer)
         return Response(PostSerializer(offer).data)
 
 
@@ -84,7 +88,11 @@ class RequestViewSet(viewsets.ViewSet):
         resident_profile = campusQueries.get_resident_profile_by(user=request.user)
         serializer = CreatePostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        rqst = RequestService.create_request(resident_profile=resident_profile, **serializer.validated_data)
+        rqst = PostService.create_post(
+            type=Post.PostType.Request,
+            resident_profile=resident_profile,
+            **serializer.validated_data
+        )
         return Response(PostSerializer(rqst).data)
 
     def partial_update(self, request, pk):
@@ -92,7 +100,7 @@ class RequestViewSet(viewsets.ViewSet):
         rqst = queries.get_campus_post_by_id(campus=resident_profile.room.building.campus, id=pk)
         serializer = UpdatePostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        rqst = RequestService.update_request(
+        rqst = PostService.update_post(
             resident_profile=resident_profile,
             request=rqst,
             **serializer.validated_data
@@ -102,7 +110,7 @@ class RequestViewSet(viewsets.ViewSet):
     def destroy(self, request, pk):
         resident_profile = campusQueries.get_resident_profile_by(user=request.user)
         rqst = queries.get_campus_post_by_id(campus=resident_profile.room.building.campus, id=pk)
-        rqst = RequestService.delete_request(resident_profile=resident_profile, request=rqst)
+        rqst = PostService.delete_post(resident_profile=resident_profile, request=rqst)
         return Response(PostSerializer(rqst).data)
 
 
@@ -126,14 +134,18 @@ class RequestApplicationsViewSet(viewsets.ViewSet):
         resident_profile = campusQueries.get_resident_profile_by(user=request.user)
         campus = resident_profile.room.building.campus
         post = queries.get_campus_post_by_id(campus=campus, id=post_id)
-        application = RequestService.apply_to_serve_request(resident_profile=resident_profile, post=post)
+        application = PostService.apply_to_post(
+            type=Post.PostType.Request,
+            resident_profile=resident_profile,
+            post=post
+        )
         return Response(ApplicationSerializer(application).data)
 
     def partial_update(self, request, post_id, pk):
         resident_profile = campusQueries.get_resident_profile_by(user=request.user)
         application = queries.get_application_by_id(id=pk)
         action = request.GET.get('action', None)
-        application = RequestService.update_application(
+        application = PostService.update_application(
             resident_profile=resident_profile,
             application=application,
             action=action

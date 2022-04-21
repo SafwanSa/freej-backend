@@ -24,86 +24,47 @@ class PostService:
         )
         return new_review
 
-
-class OfferService(PostService):
-
     @staticmethod
-    def create_offer(resident_profile: ResidentProfile, title: str, description: str) -> Post:
+    def create_post(type: Post.PostType, resident_profile: ResidentProfile, title: str, description: str) -> Post:
         campus = resident_profile.room.building.campus
-        new_offer = Post.objects.create(
-            type=Post.PostType.Offer.value,
+        new_post = Post.objects.create(
+            type=type.value,
             campus=campus,
             owner=resident_profile,
             title=title,
             description=description,
         )
-        return new_offer
+        return new_post
 
     @staticmethod
-    def update_offer(resident_profile: ResidentProfile, offer: Post, is_active: bool = None,
-                     title: str = None, description: str = None) -> Post:
-        if offer.owner != resident_profile:
+    def update_post(resident_profile: ResidentProfile, post: Post, is_active: bool = None,
+                    title: str = None, description: str = None) -> Post:
+
+        if post.owner != resident_profile:
             raise APIError(Error.NOT_OWNER)
 
-        if offer:
-            offer.title = title
+        if post:
+            post.title = title
         if description:
-            offer.description = description
+            post.description = description
         if is_active is not None:
-            offer.is_active = is_active
-        offer.save()
-        return offer
+            post.is_active = is_active
+        post.save()
+        return post
 
     @staticmethod
-    def delete_offer(resident_profile: ResidentProfile, offer: Post) -> Post:
-        if offer.owner != resident_profile:
+    def delete_post(resident_profile: ResidentProfile, post: Post) -> Post:
+        if post.owner != resident_profile:
             raise APIError(Error.NOT_OWNER)
 
-        offer.is_deleted = True
-        offer.save()
-        return offer
+        post.is_deleted = True
+        post.save()
 
-
-class RequestService(PostService):
-
-    @staticmethod
-    def create_request(resident_profile: ResidentProfile, title: str, description: str) -> Post:
-        campus = resident_profile.room.building.campus
-        new_request = Post.objects.create(
-            type=Post.PostType.Request.value,
-            campus=campus,
-            owner=resident_profile,
-            title=title,
-            description=description,
-        )
-        return new_request
+        # TODO: Reject/delete all its applications
+        return post
 
     @staticmethod
-    def update_request(resident_profile: ResidentProfile, request: Post, is_active: bool = None,
-                       title: str = None, description: str = None) -> Post:
-        if request.owner != resident_profile:
-            raise APIError(Error.NOT_OWNER)
-
-        if request:
-            request.title = title
-        if description:
-            request.description = description
-        if is_active is not None:
-            request.is_active = is_active
-        request.save()
-        return request
-
-    @staticmethod
-    def delete_request(resident_profile: ResidentProfile, request: Post) -> Post:
-        if request.owner != resident_profile:
-            raise APIError(Error.NOT_OWNER)
-
-        request.is_deleted = True
-        request.save()
-        return request
-
-    @staticmethod
-    def apply_to_serve_request(resident_profile: ResidentProfile, post: Post) -> Application:
+    def apply_to_post(type: Post.PostType, resident_profile: ResidentProfile, post: Post) -> Application:
         """
         This is performed by the beneficiary
         """
@@ -116,16 +77,17 @@ class RequestService(PostService):
         if post.owner == resident_profile:
             raise APIError(Error.OWNER_CANNOT_APPLY)
 
+        description = 'A resident has applied to your request of service' if type == Post.PostType.Request else 'A resident has applied to benifit from your offer'
         application = Application.objects.create(
             post=post,
             beneficiary=resident_profile,
             status=Application.ApplicationStatus.Pending.value,
-            description='A resident has applied to your request of service'
+            description=description
         )
         return application
 
     @staticmethod
-    def cancel_serve_request_application(resident_profile: ResidentProfile, application: Application) -> Application:
+    def cancel_post_application(resident_profile: ResidentProfile, application: Application) -> Application:
         """
         This is performed by the beneficiary
         """
@@ -143,7 +105,7 @@ class RequestService(PostService):
         return application
 
     @staticmethod
-    def accept_serve_request_application(resident_profile: ResidentProfile, application: Application) -> Application:
+    def accept_post_application(resident_profile: ResidentProfile, application: Application) -> Application:
         """
         This is performed by the owner
         """
@@ -169,7 +131,7 @@ class RequestService(PostService):
         return application
 
     @staticmethod
-    def reject_serve_request_application(resident_profile: ResidentProfile, application: Application) -> Application:
+    def reject_post_application(resident_profile: ResidentProfile, application: Application) -> Application:
         """
         This is performed by the owner
         """
@@ -213,12 +175,12 @@ class RequestService(PostService):
     @staticmethod
     def update_application(resident_profile: ResidentProfile, application: Application, action: str) -> Application:
         if action == 'accept':
-            return RequestService.accept_serve_request_application(resident_profile, application)
+            return PostService.accept_post_application(resident_profile, application)
         elif action == 'reject':
-            return RequestService.reject_serve_request_application(resident_profile, application)
+            return PostService.reject_post_application(resident_profile, application)
         elif action == 'cancel':
-            return RequestService.cancel_serve_request_application(resident_profile, application)
+            return PostService.cancel_post_application(resident_profile, application)
         elif action == 'complete':
-            return RequestService.complete_application(resident_profile, application)
+            return PostService.complete_application(resident_profile, application)
         else:
             raise APIError(Error.UNSUPPORTED_ACTION)
