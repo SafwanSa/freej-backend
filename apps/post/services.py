@@ -131,8 +131,14 @@ class RequestService(PostService):
         """
         application = queries.get_all_post_applications_by(post=post, beneficiary=resident_profile).first()
 
-        if application.status != Application.ApplicationStatus.Pending.value:
-            raise APIError(Error.CANNOT_CANCEL)
+        # Owner can cancel if accepted
+        # Beneficiary can cancel if pending
+        if application.post.owner == resident_profile:
+            if application.status != Application.ApplicationStatus.Accepted.value:
+                raise APIError(Error.CANNOT_CANCEL)
+        else:
+            if application.status != Application.ApplicationStatus.Pending.value:
+                raise APIError(Error.CANNOT_CANCEL)
 
         application.status = Application.ApplicationStatus.Cancelled.value
         return application
