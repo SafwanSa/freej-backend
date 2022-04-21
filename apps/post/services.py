@@ -101,3 +101,74 @@ class RequestService(PostService):
         request.is_deleted = True
         request.save()
         return request
+
+    @staticmethod
+    def apply_to_serve_request(resident_profile: ResidentProfile, post: Post) -> Application:
+        """
+        This is performed by the beneficiary
+        """
+        # Check if beneficiary already applied to the post
+        application = queries.get_all_post_applications_by(post=post, beneficiary=resident_profile).first()
+        if application:
+            raise APIError(Error.ALREADY_APPLIED)
+
+        # check if the beneficiary is the same as the owner
+        if post.owner == resident_profile:
+            raise APIError(Error.OWNER_CANNOT_APPLY)
+
+        application = Application.objects.create(
+            post=post,
+            beneficiary=resident_profile,
+            status=Application.ApplicationStatus.Pending.value,
+            description='A resident has applied to your request of service'
+        )
+        return application
+
+    @staticmethod
+    def cancel_serve_request_application(resident_profile: ResidentProfile, post: Post) -> Application:
+        """
+        This is performed by the beneficiary
+        """
+        application = queries.get_all_post_applications_by(post=post, beneficiary=resident_profile).first()
+
+        if application.status != Application.ApplicationStatus.Pending.value:
+            raise APIError(Error.CANNOT_CANCEL)
+
+        application.status = Application.ApplicationStatus.Cancelled.value
+        return application
+
+    @staticmethod
+    def accept_serve_request_application(resident_profile: ResidentProfile, application: Application) -> Application:
+        """
+        This is performed by the owner
+        """
+        # check if the resident is the owner
+        if application.post.owner != resident_profile:
+            raise APIError(Error.NOT_OWNER)
+
+        # Accpet the application
+        application.status = Application.ApplicationStatus.Accepted.value
+        application.save()
+
+        # Reject all other applications
+        post = application.post
+        all_applications = queries.get_all_post_applications_by(post=post, beneficiary=None, status=None)
+        other_applications = all_applications.exclude(id=application.id)
+        for app in other_applications:
+            app.status = Application.ApplicationStatus.Rejected.value
+        return application
+
+    @staticmethod
+    def reject_serve_request_application(resident_profile: ResidentProfile, application: Application) -> Application:
+        """
+        This is performed by the owner
+        """
+        # check if the resident is the owner
+        if application.post.owner != resident_profile:
+            raise APIError(Error.NOT_OWNER)
+
+        # Accpet the application
+        application.status = Application.ApplicationStatus.Rejected.value
+        application.save()
+
+        return application
