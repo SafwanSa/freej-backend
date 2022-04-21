@@ -24,7 +24,7 @@ class EventAdmin(nested_admin.NestedModelAdmin):
         'created_at'
     ]
     list_filter = ['campus', 'type', 'status', 'date', 'created_at']
-    search_fields = ['host__user', 'campus']
+    search_fields = ['host__user__username', 'campus__name_ar', 'campus__name_en']
 
 
 class EventApplicationAdmin(nested_admin.NestedModelAdmin):
@@ -37,7 +37,12 @@ class EventApplicationAdmin(nested_admin.NestedModelAdmin):
         'created_at'
     ]
     list_filter = ['status', 'event', 'event__campus', 'created_at']
-    search_fields = ['event__name', 'event__campus']
+    search_fields = [
+        'event__name',
+        'event__campus__name_ar',
+        'event__campus__name_en',
+        'resident_profile__user__username'
+    ]
 
 
 admin.site.register(Event, EventAdmin)

@@ -56,7 +56,7 @@ class MaintenanceIssueAdmin(nested_admin.NestedModelAdmin):
         'created_at'
     ]
     list_filter = ['building__campus', 'created_at']
-    search_fields = ['building']
+    search_fields = ['building__name', 'building__campus__name_en', 'building__campus__name_ar']
 
 
 class ResidentProfileAdmin(nested_admin.NestedModelAdmin):

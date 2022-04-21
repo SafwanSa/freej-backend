@@ -29,7 +29,7 @@ class PostAdmin(nested_admin.NestedModelAdmin):
         'created_at'
     ]
     list_filter = ['campus', 'type', 'is_active', 'created_at']
-    search_fields = ['owner__user__username', 'campus__name']
+    search_fields = ['owner__user__username', 'campus__name_ar', 'campus__name_en']
 
 
 class ApplicationAdmin(nested_admin.NestedModelAdmin):
@@ -43,7 +43,7 @@ class ApplicationAdmin(nested_admin.NestedModelAdmin):
         'created_at'
     ]
     list_filter = ['post__campus', 'status', 'status_updated_at', 'created_at']
-    search_fields = ['beneficiary__user__username', 'post__campus__name']
+    search_fields = ['beneficiary__user__username', 'post__campus__name_ar', 'post__campus__name_en']
 
 
 class ReviewAdmin(nested_admin.NestedModelAdmin):
@@ -57,7 +57,7 @@ class ReviewAdmin(nested_admin.NestedModelAdmin):
         'created_at'
     ]
     list_filter = ['post__campus', 'rating', 'created_at']
-    search_fields = ['reviewer__user__username', 'post__campus__name']
+    search_fields = ['reviewer__user__username', 'post__campus__name_en', 'post__campus__name_ar']
 
 
 admin.site.register(Post, PostAdmin)
