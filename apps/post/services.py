@@ -64,7 +64,7 @@ class PostService:
         return post
 
     @staticmethod
-    def apply_to_post(type: Post.PostType, resident_profile: ResidentProfile, post: Post) -> Application:
+    def apply_to_post(type: str, resident_profile: ResidentProfile, post: Post) -> Application:
         """
         This is performed by the beneficiary
         """
@@ -77,7 +77,7 @@ class PostService:
         if post.owner == resident_profile:
             raise APIError(Error.OWNER_CANNOT_APPLY)
 
-        description = 'A resident has applied to your request of service' if type == Post.PostType.Request else 'A resident has applied to benifit from your offer'
+        description = 'A resident has applied to your request of service' if type == Post.PostType.Request.value else 'A resident has applied to benifit from your offer'
         application = Application.objects.create(
             post=post,
             beneficiary=resident_profile,

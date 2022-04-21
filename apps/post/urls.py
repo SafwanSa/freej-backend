@@ -6,7 +6,7 @@ router = DefaultRouter()
 router2 = DefaultRouter()
 router.register('offers', views.OfferViewSet, basename='offers')
 router.register('requests', views.RequestViewSet, basename='requests')
-router2.register('', views.RequestApplicationsViewSet, basename='requests-applications')
+router2.register('', views.PostApplicationsViewSet, basename='requests-applications')
 
 urlpatterns = [
     path('', include(router.urls)),
