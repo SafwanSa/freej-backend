@@ -29,9 +29,10 @@ class Error(Enum):
     ALREADY_RATED = {'code': -325, 'detail': _("You have already rated this post!")}
     ALREADY_APPLIED = {'code': -328, 'detail': _("You have already applied to this post!")}
     OWNER_CANNOT_APPLY = {'code': -477, 'detail': _("You cannot apply to your own post!")}
-    CANNOT_CANCEL = {'code': -417, 'detail': _("You cannot cancel your application!")}
+    CANNOT_CANCEL = {'code': -417, 'detail': _("You cannot cancel this application!")}
     MUST_BE_PENDING = {'code': -717, 'detail': _("It must be a pending application!")}
     MUST_BE_ACCEPTED = {'code': -617, 'detail': _("It must be an accepted application!")}
+    UNSUPPORTED_ACTION = {'code': -400, 'detail': _("Unsupported action!")}
 
 
 class APIError(Exception):

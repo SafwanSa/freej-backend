@@ -50,3 +50,9 @@ class UpdatePostSerializer(serializers.Serializer):
 
 class RateSerializer(serializers.Serializer):
     rating = serializers.IntegerField()
+
+
+class ApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Application
+        fields = '__all__'

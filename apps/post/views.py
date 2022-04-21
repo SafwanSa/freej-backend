@@ -105,3 +105,25 @@ class ReviewView(APIView):
         serializer.is_valid(raise_exception=True)
         review = PostService.rate_post(resident_profile=resident_profile, post=post, **serializer.validated_data)
         return Response(ReviewSerializer(review).data)
+
+
+class RequestApplicationsViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated, ResidentProfileAccess]
+
+    def create(self, request, post_id):
+        resident_profile = campusQueries.get_resident_profile_by(user=request.user)
+        campus = resident_profile.room.building.campus
+        post = queries.get_campus_post_by_id(campus=campus, id=post_id)
+        application = RequestService.apply_to_serve_request(resident_profile=resident_profile, post=post)
+        return Response(ApplicationSerializer(application).data)
+
+    def partial_update(self, request, post_id, pk):
+        resident_profile = campusQueries.get_resident_profile_by(user=request.user)
+        application = queries.get_application_by_id(id=pk)
+        action = request.GET.get('action', None)
+        application = RequestService.update_application(
+            resident_profile=resident_profile,
+            application=application,
+            action=action
+        )
+        return Response(ApplicationSerializer(application).data)
