@@ -152,6 +152,10 @@ class RequestService(PostService):
         if application.post.owner != resident_profile:
             raise APIError(Error.NOT_OWNER)
 
+        # Accept if pending only
+        if application.status != Application.ApplicationStatus.Pending.value:
+            raise APIError(Error.MUST_BE_PENDING)
+
         # Accpet the application
         application.status = Application.ApplicationStatus.Accepted.value
         application.save()
@@ -173,7 +177,11 @@ class RequestService(PostService):
         if application.post.owner != resident_profile:
             raise APIError(Error.NOT_OWNER)
 
-        # Accpet the application
+        # Reject if accepted only
+        if application.status != Application.ApplicationStatus.Pending.value:
+            raise APIError(Error.MUST_BE_PENDING)
+
+        # Reject the application
         application.status = Application.ApplicationStatus.Rejected.value
         application.save()
 

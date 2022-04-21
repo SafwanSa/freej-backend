@@ -30,6 +30,7 @@ class Error(Enum):
     ALREADY_APPLIED = {'code': -328, 'detail': _("You have already applied to this post!")}
     OWNER_CANNOT_APPLY = {'code': -477, 'detail': _("You cannot apply to your own post!")}
     CANNOT_CANCEL = {'code': -417, 'detail': _("You cannot cancel your application!")}
+    MUST_BE_PENDING = {'code': -717, 'detail': _("It must be a pending application!")}
 
 
 class APIError(Exception):
