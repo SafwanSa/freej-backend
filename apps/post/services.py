@@ -10,83 +10,177 @@ from apps.campus.models import ResidentProfile, Campus
 class PostService:
 
     @staticmethod
-    def create_post():
-        pass
+    def rate_post(resident_profile: ResidentProfile, post: Post, rating: int) -> Post:
+        reviews = queries.get_post_reviews(post=post)
+        reviews = reviews.filter(reviewer=resident_profile)
+        if reviews.exists():
+            raise APIError(Error.ALREADY_RATED)
 
-
-class OfferService(PostService):
+        new_review = Review.objects.create(
+            post=post,
+            reviewer=resident_profile,
+            rating=rating,
+            comment=None
+        )
+        return new_review
 
     @staticmethod
-    def create_offer(resident_profile: ResidentProfile, title: str, description: str) -> Post:
+    def create_post(type: Post.PostType, resident_profile: ResidentProfile, title: str, description: str) -> Post:
         campus = resident_profile.room.building.campus
-        new_offer = Post.objects.create(
-            type=Post.PostType.Offer.value,
+        new_post = Post.objects.create(
+            type=type.value,
             campus=campus,
             owner=resident_profile,
             title=title,
             description=description,
         )
-        return new_offer
+        return new_post
 
     @staticmethod
-    def update_offer(resident_profile: ResidentProfile, offer: Post, is_active: bool = None,
-                     title: str = None, description: str = None) -> Post:
-        if offer.owner != resident_profile:
+    def update_post(resident_profile: ResidentProfile, post: Post, is_active: bool = None,
+                    title: str = None, description: str = None) -> Post:
+
+        if post.owner != resident_profile:
             raise APIError(Error.NOT_OWNER)
 
-        if offer:
-            offer.title = title
+        if post:
+            post.title = title
         if description:
-            offer.description = description
+            post.description = description
         if is_active is not None:
-            offer.is_active = is_active
-        offer.save()
-        return offer
+            post.is_active = is_active
+        post.save()
+        return post
 
     @staticmethod
-    def delete_offer(resident_profile: ResidentProfile, offer: Post) -> Post:
-        if offer.owner != resident_profile:
+    def delete_post(resident_profile: ResidentProfile, post: Post) -> Post:
+        if post.owner != resident_profile:
             raise APIError(Error.NOT_OWNER)
 
-        offer.is_deleted = True
-        offer.save()
-        return offer
+        post.is_deleted = True
+        post.save()
 
-
-class RequestService(PostService):
+        # TODO: Reject/delete all its applications
+        return post
 
     @staticmethod
-    def create_request(resident_profile: ResidentProfile, title: str, description: str) -> Post:
-        campus = resident_profile.room.building.campus
-        new_request = Post.objects.create(
-            type=Post.PostType.Request.value,
-            campus=campus,
-            owner=resident_profile,
-            title=title,
-            description=description,
+    def apply_to_post(type: str, resident_profile: ResidentProfile, post: Post) -> Application:
+        """
+        This is performed by the beneficiary
+        """
+        # Check if beneficiary already applied to the post
+        application = queries.get_all_post_applications_by(post=post, beneficiary=resident_profile).first()
+        if application:
+            raise APIError(Error.ALREADY_APPLIED)
+
+        # check if the beneficiary is the same as the owner
+        if post.owner == resident_profile:
+            raise APIError(Error.OWNER_CANNOT_APPLY)
+
+        description = 'A resident has applied to your request of service' if type == Post.PostType.Request.value else 'A resident has applied to benifit from your offer'
+        application = Application.objects.create(
+            post=post,
+            beneficiary=resident_profile,
+            status=Application.ApplicationStatus.Pending.value,
+            description=description
         )
-        return new_request
+        return application
 
     @staticmethod
-    def update_request(resident_profile: ResidentProfile, request: Post, is_active: bool = None,
-                       title: str = None, description: str = None) -> Post:
-        if request.owner != resident_profile:
-            raise APIError(Error.NOT_OWNER)
+    def cancel_post_application(resident_profile: ResidentProfile, application: Application) -> Application:
+        """
+        This is performed by the beneficiary
+        """
+        # Owner can cancel if accepted
+        # Beneficiary can cancel if pending
+        if application.post.owner == resident_profile:
+            if application.status != Application.ApplicationStatus.Accepted.value:
+                raise APIError(Error.CANNOT_CANCEL)
+        else:
+            if application.status != Application.ApplicationStatus.Pending.value:
+                raise APIError(Error.CANNOT_CANCEL)
 
-        if request:
-            request.title = title
-        if description:
-            request.description = description
-        if is_active is not None:
-            request.is_active = is_active
-        request.save()
-        return request
+        application.status = Application.ApplicationStatus.Cancelled.value
+        application.save()
+        return application
 
     @staticmethod
-    def delete_request(resident_profile: ResidentProfile, request: Post) -> Post:
-        if request.owner != resident_profile:
+    def accept_post_application(resident_profile: ResidentProfile, application: Application) -> Application:
+        """
+        This is performed by the owner
+        """
+        # check if the resident is the owner
+        if application.post.owner != resident_profile:
             raise APIError(Error.NOT_OWNER)
 
-        request.is_deleted = True
-        request.save()
-        return request
+        # Accept if pending only
+        if application.status != Application.ApplicationStatus.Pending.value:
+            raise APIError(Error.MUST_BE_PENDING)
+
+        # Accpet the application
+        application.status = Application.ApplicationStatus.Accepted.value
+        application.save()
+
+        # Reject all other applications
+        post = application.post
+        all_applications = queries.get_all_post_applications_by(post=post, beneficiary=None, status=None)
+        other_applications = all_applications.exclude(id=application.id)
+        for app in other_applications:
+            app.status = Application.ApplicationStatus.Rejected.value
+            app.save()
+        return application
+
+    @staticmethod
+    def reject_post_application(resident_profile: ResidentProfile, application: Application) -> Application:
+        """
+        This is performed by the owner
+        """
+        # check if the resident is the owner
+        if application.post.owner != resident_profile:
+            raise APIError(Error.NOT_OWNER)
+
+        # Reject if pending only
+        if application.status != Application.ApplicationStatus.Pending.value:
+            raise APIError(Error.MUST_BE_PENDING)
+
+        # Reject the application
+        application.status = Application.ApplicationStatus.Rejected.value
+        application.save()
+
+        return application
+
+    @staticmethod
+    def complete_application(resident_profile: ResidentProfile, application: Application) -> Application:
+        """
+        This is performed by the owner
+        """
+        # check if the resident is the owner
+        if application.post.owner != resident_profile:
+            raise APIError(Error.NOT_OWNER)
+
+        # Complete if accepted only
+        if application.status != Application.ApplicationStatus.Accepted.value:
+            raise APIError(Error.MUST_BE_ACCEPTED)
+
+        # Complete the application
+        application.status = Application.ApplicationStatus.Completed.value
+        application.save()
+
+        # Deactivate the post
+        post = application.post
+        post.is_active = False
+        post.save()
+        return application
+
+    @staticmethod
+    def update_application(resident_profile: ResidentProfile, application: Application, action: str) -> Application:
+        if action == 'accept':
+            return PostService.accept_post_application(resident_profile, application)
+        elif action == 'reject':
+            return PostService.reject_post_application(resident_profile, application)
+        elif action == 'cancel':
+            return PostService.cancel_post_application(resident_profile, application)
+        elif action == 'complete':
+            return PostService.complete_application(resident_profile, application)
+        else:
+            raise APIError(Error.UNSUPPORTED_ACTION)

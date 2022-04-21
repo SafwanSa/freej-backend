@@ -35,10 +35,14 @@ def get_review_by_id(id: int) -> Post:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[Review._meta.model_name])
 
 
-def get_all_post_applications_by(post: Post, status: Application.ApplicationStatus = None) -> Iterable[Application]:
+def get_all_post_applications_by(post: Post, beneficiary: ResidentProfile = None,
+                                 status: Application.ApplicationStatus = None) -> Iterable[Application]:
+    applications = post.applications.filter(is_deleted=False)
+    if beneficiary:
+        applications = applications.filter(beneficiary=beneficiary)
     if status:
-        return post.applications.filter(is_deleted=False, status=status.value).order_by('-created_at')
-    return post.applications.filter(is_deleted=False).order_by('-created_at')
+        applications = applications.filter(status=status.value)
+    return applications.order_by('-created_at')
 
 
 def get_application_by_id(id: int) -> Application:
