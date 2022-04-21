@@ -47,6 +47,9 @@ class ResidentProfile(BaseModel):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='residents')
     is_supervisor = models.BooleanField(default=False)
 
+    def __str__(self) -> str:
+        return f'{self.user.username}'
+
 
 class MaintenanceIssue(BaseModel):
     class MaintenanceIssueType(Enum):
