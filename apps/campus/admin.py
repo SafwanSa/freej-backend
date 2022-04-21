@@ -3,6 +3,7 @@ from .models import *
 from django.utils.translation import gettext_lazy as _
 import nested_admin
 from core import utils
+from . import queries
 
 
 class CampusAdmin(nested_admin.NestedModelAdmin):
@@ -13,9 +14,14 @@ class CampusAdmin(nested_admin.NestedModelAdmin):
 
     model = Campus
     inlines = [BuildingInline]
-    list_display = ['id', 'name_en', 'name_ar', 'email_domain', 'created_at']
+    list_display = ['id', 'name_en', 'name_ar', 'email_domain', 'get_num_of_residents', 'created_at']
     list_filter = ['created_at']
     search_fields = ['name_en', 'name_ar']
+
+    def get_num_of_residents(self, obj):
+        count = queries.get_all_campus_residents(campus=obj).count()
+        return count
+    get_num_of_residents.short_description = 'Num. Residents'
 
 
 class BuildingAdmin(nested_admin.NestedModelAdmin):
@@ -26,9 +32,21 @@ class BuildingAdmin(nested_admin.NestedModelAdmin):
 
     model = Building
     inlines = [RoomInline]
-    list_display = ['id', 'name', utils.linkify_field('campus'), utils.linkify_field('supervisor'), 'created_at']
+    list_display = [
+        'id',
+        'name',
+        utils.linkify_field('campus'),
+        utils.linkify_field('supervisor'),
+        'get_num_of_residents',
+        'created_at'
+    ]
     list_filter = ['campus', 'created_at']
     search_fields = ['name', 'supervisor__user__username']
+
+    def get_num_of_residents(self, obj):
+        count = queries.get_all_building_residents(building=obj).count()
+        return count
+    get_num_of_residents.short_description = 'Num. Residents'
 
 
 class RoomAdmin(nested_admin.NestedModelAdmin):
@@ -39,9 +57,14 @@ class RoomAdmin(nested_admin.NestedModelAdmin):
 
     model = Building
     inlines = [ResidentInline]
-    list_display = ['id', 'name', utils.linkify_field('building'), 'created_at']
+    list_display = ['id', 'name', utils.linkify_field('building'), 'get_num_of_residents', 'created_at']
     list_filter = ['building__campus', 'created_at']
     search_fields = ['name']
+
+    def get_num_of_residents(self, obj):
+        count = queries.get_room_residents(room=obj).count()
+        return count
+    get_num_of_residents.short_description = 'Num. Residents'
 
 
 class MaintenanceIssueAdmin(nested_admin.NestedModelAdmin):
