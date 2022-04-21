@@ -15,6 +15,10 @@ def get_campus_by_id(id: int) -> Campus:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[Campus._meta.model_name])
 
 
+def get_all_campus_residents(campus: Campus) -> Iterable[ResidentProfile]:
+    return ResidentProfile.objects.filter(is_deleted=False, room__building__campus=campus)
+
+
 def get_campus_buildings(campus: Campus) -> Iterable[Building]:
     return campus.buildings.filter(is_deleted=False)
 
@@ -24,6 +28,10 @@ def get_building_by_id(id: int) -> Building:
         return Building.objects.get(id=id)
     except Building.DoesNotExist:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[Building._meta.model_name])
+
+
+def get_all_building_residents(building: Building) -> Iterable[ResidentProfile]:
+    return ResidentProfile.objects.filter(is_deleted=False, room__building=building)
 
 
 def get_building_rooms(building: Building) -> Iterable[Room]:
