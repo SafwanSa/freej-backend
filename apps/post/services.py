@@ -125,12 +125,10 @@ class RequestService(PostService):
         return application
 
     @staticmethod
-    def cancel_serve_request_application(resident_profile: ResidentProfile, post: Post) -> Application:
+    def cancel_serve_request_application(resident_profile: ResidentProfile, application: Application) -> Application:
         """
         This is performed by the beneficiary
         """
-        application = queries.get_all_post_applications_by(post=post, beneficiary=resident_profile).first()
-
         # Owner can cancel if accepted
         # Beneficiary can cancel if pending
         if application.post.owner == resident_profile:
@@ -141,6 +139,7 @@ class RequestService(PostService):
                 raise APIError(Error.CANNOT_CANCEL)
 
         application.status = Application.ApplicationStatus.Cancelled.value
+        application.save()
         return application
 
     @staticmethod
@@ -166,6 +165,7 @@ class RequestService(PostService):
         other_applications = all_applications.exclude(id=application.id)
         for app in other_applications:
             app.status = Application.ApplicationStatus.Rejected.value
+            app.save()
         return application
 
     @staticmethod
@@ -204,4 +204,21 @@ class RequestService(PostService):
         application.status = Application.ApplicationStatus.Completed.value
         application.save()
 
+        # Deactivate the post
+        post = application.post
+        post.is_active = False
+        post.save()
         return application
+
+    @staticmethod
+    def update_application(resident_profile: ResidentProfile, application: Application, action: str) -> Application:
+        if action == 'accept':
+            return RequestService.accept_serve_request_application(resident_profile, application)
+        elif action == 'reject':
+            return RequestService.reject_serve_request_application(resident_profile, application)
+        elif action == 'cancel':
+            return RequestService.cancel_serve_request_application(resident_profile, application)
+        elif action == 'complete':
+            return RequestService.complete_application(resident_profile, application)
+        else:
+            raise APIError(Error.UNSUPPORTED_ACTION)
