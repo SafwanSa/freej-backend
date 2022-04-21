@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from . import queries
 
 
 class OwnerSerializer(serializers.ModelSerializer):
@@ -28,12 +29,21 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     owner = OwnerSerializer()
-
     reviews = ReviewSerializer(many=True)
+    application = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = '__all__'
+
+    def get_application(self, obj):
+        if self.context.get('show_application_status'):
+            resident_profile = self.context.get('resident_profile')
+            applications = queries.get_all_post_applications_by(beneficiary=resident_profile, post=obj)
+            if applications.exists():
+                application = applications.first()
+                return {'id': application.id, 'status': application.status}
+        return None
 
 
 class CreatePostSerializer(serializers.Serializer):
@@ -46,3 +56,13 @@ class UpdatePostSerializer(serializers.Serializer):
     title = serializers.CharField(required=False)
     description = serializers.CharField(required=False)
     is_active = serializers.BooleanField(required=False)
+
+
+class RateSerializer(serializers.Serializer):
+    rating = serializers.IntegerField()
+
+
+class ApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Application
+        fields = '__all__'
