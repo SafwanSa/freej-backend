@@ -18,7 +18,7 @@ class Error(Enum):
     # ACCOUNT_ALREADY_EXIST = {'code': -408, 'detail': _('Account with this mobile number or email already exist!')}
     INVALID_OTP = {'code': -408, 'detail': _('OTP is invalid!')}
     UNSUPPORTED_LANGUAGE = {'code': -487, 'detail': _('Provided language is unsupported!')}
-    NOT_ALLOWED_TO_REQUEST_OTP = {'code': -487, 'detail': _('You have already requested an OTP, please wait!')}
+    NOT_ALLOWED_TO_REQUEST_OTP = {'code': -478, 'detail': _('You have already requested an OTP, please wait!')}
     INVALID_DOMAIN = {
         'code': -788,
         'detail': _("Your email's domain does not match with selected campus domain!")}
@@ -27,6 +27,9 @@ class Error(Enum):
     NO_EVENT_APPLICATION = {'code': -560, 'detail': _("You did not apply for this event!")}
     NOT_OWNER = {'code': -365, 'detail': _("Only the owner can perform this action!")}
     ALREADY_RATED = {'code': -325, 'detail': _("You have already rated this post!")}
+    ALREADY_APPLIED = {'code': -328, 'detail': _("You have already applied to this post!")}
+    OWNER_CANNOT_APPLY = {'code': -477, 'detail': _("You cannot apply to your own post!")}
+    CANNOT_CANCEL = {'code': -417, 'detail': _("You cannot cancel your application!")}
 
 
 class APIError(Exception):
