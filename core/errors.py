@@ -31,6 +31,7 @@ class Error(Enum):
     OWNER_CANNOT_APPLY = {'code': -477, 'detail': _("You cannot apply to your own post!")}
     CANNOT_CANCEL = {'code': -417, 'detail': _("You cannot cancel your application!")}
     MUST_BE_PENDING = {'code': -717, 'detail': _("It must be a pending application!")}
+    MUST_BE_ACCEPTED = {'code': -617, 'detail': _("It must be an accepted application!")}
 
 
 class APIError(Exception):

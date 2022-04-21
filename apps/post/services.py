@@ -177,12 +177,31 @@ class RequestService(PostService):
         if application.post.owner != resident_profile:
             raise APIError(Error.NOT_OWNER)
 
-        # Reject if accepted only
+        # Reject if pending only
         if application.status != Application.ApplicationStatus.Pending.value:
             raise APIError(Error.MUST_BE_PENDING)
 
         # Reject the application
         application.status = Application.ApplicationStatus.Rejected.value
+        application.save()
+
+        return application
+
+    @staticmethod
+    def complete_application(resident_profile: ResidentProfile, application: Application) -> Application:
+        """
+        This is performed by the owner
+        """
+        # check if the resident is the owner
+        if application.post.owner != resident_profile:
+            raise APIError(Error.NOT_OWNER)
+
+        # Complete if accepted only
+        if application.status != Application.ApplicationStatus.Accepted.value:
+            raise APIError(Error.MUST_BE_ACCEPTED)
+
+        # Complete the application
+        application.status = Application.ApplicationStatus.Completed.value
         application.save()
 
         return application
