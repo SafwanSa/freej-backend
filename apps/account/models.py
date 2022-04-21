@@ -9,6 +9,7 @@ from apps.utility.services import ConfigService as Conf
 from django.contrib.auth.models import (
     AbstractBaseUser, PermissionsMixin, BaseUserManager,
 )
+from django.contrib.auth.models import Group
 from django.utils import timezone
 
 
@@ -29,6 +30,9 @@ class UserManager(BaseUserManager):
         user = self.model(username=username, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
+        if user.is_superuser:
+            group, created = Group.objects.get_or_create(name=GroupEnum.Admin.value)
+            group.user_set.add(user)
         return user
 
     def create_user(self, username, password=None, **extra_fields):
