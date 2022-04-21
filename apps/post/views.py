@@ -127,7 +127,7 @@ class ReviewView(APIView):
         return Response(ReviewSerializer(review).data)
 
 
-class RequestApplicationsViewSet(viewsets.ViewSet):
+class PostApplicationsViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated, ResidentProfileAccess]
 
     def create(self, request, post_id):
@@ -135,7 +135,7 @@ class RequestApplicationsViewSet(viewsets.ViewSet):
         campus = resident_profile.room.building.campus
         post = queries.get_campus_post_by_id(campus=campus, id=post_id)
         application = PostService.apply_to_post(
-            type=Post.PostType.Request,
+            type=post.type,
             resident_profile=resident_profile,
             post=post
         )
