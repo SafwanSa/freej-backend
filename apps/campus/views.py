@@ -54,7 +54,7 @@ class FixBuildingIssuesView(APIView):
     def post(self, request, pk):
         resident_profile = queries.get_resident_profile_by(user=request.user)
         issue = queries.get_issue_by_id(id=pk)
-        issue = BuildingService.report_issue_with_fix(issue=issue)
+        issue = BuildingService.report_issue_with_fix(issue=issue, resident_profile=resident_profile)
         return Response(MaintenanceIssueSerializer(issue).data)
 
 # ------------------------------------------ # Signup views # ------------------------------------------

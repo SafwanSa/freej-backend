@@ -28,6 +28,10 @@ def get_post_reviews(post: Post) -> Iterable[Review]:
     return post.reviews.filter(is_deleted=False).order_by('-created_at')
 
 
+def get_post_images(post: Post) -> Iterable[Review]:
+    return post.images.filter(is_deleted=False).order_by('-created_at')
+
+
 def get_review_by_id(id: int) -> Post:
     try:
         return Review.objects.get(id=id)

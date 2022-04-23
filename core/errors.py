@@ -33,6 +33,7 @@ class Error(Enum):
     MUST_BE_PENDING = {'code': -717, 'detail': _("It must be a pending application!")}
     MUST_BE_ACCEPTED = {'code': -617, 'detail': _("It must be an accepted application!")}
     UNSUPPORTED_ACTION = {'code': -400, 'detail': _("Unsupported action!")}
+    ALREADY_FIXED_REPORTED = {'code': -936, 'detail': _("You have already reported a fix!")}
 
 
 class APIError(Exception):

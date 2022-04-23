@@ -25,7 +25,8 @@ class PostService:
         return new_review
 
     @staticmethod
-    def create_post(type: Post.PostType, resident_profile: ResidentProfile, title: str, description: str) -> Post:
+    def create_post(type: Post.PostType, resident_profile: ResidentProfile,
+                    title: str, description: str, images: list = None) -> Post:
         campus = resident_profile.room.building.campus
         new_post = Post.objects.create(
             type=type.value,
@@ -34,11 +35,17 @@ class PostService:
             title=title,
             description=description,
         )
+        if images is not None and len(images) != 0:
+            for url in images:
+                new_image = PostImage.objects.create(
+                    post=new_post,
+                    image=url
+                )
         return new_post
 
     @staticmethod
     def update_post(resident_profile: ResidentProfile, post: Post, is_active: bool = None,
-                    title: str = None, description: str = None) -> Post:
+                    title: str = None, description: str = None, images: list = None) -> Post:
 
         if post.owner != resident_profile:
             raise APIError(Error.NOT_OWNER)
@@ -49,6 +56,20 @@ class PostService:
             post.description = description
         if is_active is not None:
             post.is_active = is_active
+
+        if images is not None and len(images) != 0:
+            # Delete previous images
+            old_images = queries.get_post_images(post=post)
+            for img in old_images:
+                img.is_deleted = True
+                img.save()
+
+            # Add new images
+            for url in images:
+                new_image = PostImage.objects.create(
+                    post=post,
+                    image=url
+                )
         post.save()
         return post
 
