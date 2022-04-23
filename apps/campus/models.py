@@ -54,7 +54,7 @@ class ResidentProfile(BaseModel):
 class MaintenanceIssue(BaseModel):
     class MaintenanceIssueType(Enum):
         Halls = 'halls'
-        Rooms = 'Rooms'
+        Rooms = 'rooms'
         Bathrooms = 'bathroom'
         Other = 'other'
 
@@ -63,6 +63,7 @@ class MaintenanceIssue(BaseModel):
         Canceled = 'canceled'
         Fixed = 'fixed'
     reported_by = models.ForeignKey(ResidentProfile, on_delete=models.CASCADE, related_name='reported_issues')
+    reported_fixed_by = models.ManyToManyField(ResidentProfile, related_name='reported_fixed_issues')
     building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name='issues')
     type = models.CharField(max_length=30, choices=utils.create_choices_from_enum(MaintenanceIssueType))
     description = models.TextField()

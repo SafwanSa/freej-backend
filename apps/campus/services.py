@@ -62,8 +62,13 @@ class BuildingService:
         return new_issue
 
     @staticmethod
-    def report_issue_with_fix(issue: MaintenanceIssue) -> MaintenanceIssue:
-        # TODO: Should we allow the resident to vote only once?
+    def report_issue_with_fix(issue: MaintenanceIssue, resident_profile: ResidentProfile) -> MaintenanceIssue:
+        # Check if the resident has already reported a fix issue
+        reporters = issue.reported_fixed_by.all()
+        if resident_profile in reporters:
+            raise APIError(Error.ALREADY_FIXED_REPORTED)
+        # Add the resident to the reporters
+        issue.reported_fixed_by.add(resident_profile)
         issue.reported_fixed = issue.reported_fixed + 1
         issue.save()
         return issue
