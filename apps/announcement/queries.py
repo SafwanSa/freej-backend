@@ -5,8 +5,6 @@ from core.errors import Error, APIError
 from apps.account.models import User
 from apps.campus.models import Campus, Building
 
-# TODO: Order by date
-
 
 def get_all_announcements() -> Iterable[Announcement]:
     return Announcement.objects.filter(is_deleted=False).order_by('-created_at')
