@@ -27,14 +27,29 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class PostImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostImage
+        fields = ['image']
+
+
 class PostSerializer(serializers.ModelSerializer):
     owner = OwnerSerializer()
-    reviews = ReviewSerializer(many=True)
     application = serializers.SerializerMethodField()
+    reviews = serializers.SerializerMethodField()
+    images = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = '__all__'
+
+    def get_reviews(self, obj):
+        reviews = queries.get_post_reviews(post=obj)
+        return ReviewSerializer(reviews, many=True).data
+
+    def get_images(self, obj):
+        images = queries.get_post_images(post=obj)
+        return PostImageSerializer(images, many=True).data
 
     def get_application(self, obj):
         if self.context.get('show_application_status'):
@@ -49,13 +64,14 @@ class PostSerializer(serializers.ModelSerializer):
 class CreatePostSerializer(serializers.Serializer):
     title = serializers.CharField()
     description = serializers.CharField()
-    # Images
+    images = serializers.ListField(child=serializers.URLField(), required=False, allow_null=True)
 
 
 class UpdatePostSerializer(serializers.Serializer):
     title = serializers.CharField(required=False)
     description = serializers.CharField(required=False)
     is_active = serializers.BooleanField(required=False)
+    images = serializers.ListField(child=serializers.URLField(), required=False, allow_null=True)
 
 
 class RateSerializer(serializers.Serializer):

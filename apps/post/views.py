@@ -51,13 +51,13 @@ class OfferViewSet(viewsets.ViewSet):
         offer = queries.get_campus_post_by_id(campus=resident_profile.room.building.campus, id=pk)
         serializer = UpdatePostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        offer = PostService.update_post(resident_profile=resident_profile, offer=offer, **serializer.validated_data)
+        offer = PostService.update_post(resident_profile=resident_profile, post=offer, **serializer.validated_data)
         return Response(PostSerializer(offer).data)
 
     def destroy(self, request, pk):
         resident_profile = campusQueries.get_resident_profile_by(user=request.user)
         offer = queries.get_campus_post_by_id(campus=resident_profile.room.building.campus, id=pk)
-        offer = PostService.delete_post(resident_profile=resident_profile, offer=offer)
+        offer = PostService.delete_post(resident_profile=resident_profile, post=offer)
         return Response(PostSerializer(offer).data)
 
 
@@ -102,7 +102,7 @@ class RequestViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         rqst = PostService.update_post(
             resident_profile=resident_profile,
-            request=rqst,
+            post=rqst,
             **serializer.validated_data
         )
         return Response(PostSerializer(rqst).data)
@@ -110,7 +110,7 @@ class RequestViewSet(viewsets.ViewSet):
     def destroy(self, request, pk):
         resident_profile = campusQueries.get_resident_profile_by(user=request.user)
         rqst = queries.get_campus_post_by_id(campus=resident_profile.room.building.campus, id=pk)
-        rqst = PostService.delete_post(resident_profile=resident_profile, request=rqst)
+        rqst = PostService.delete_post(resident_profile=resident_profile, post=rqst)
         return Response(PostSerializer(rqst).data)
 
 
