@@ -6,6 +6,11 @@ from core import utils
 
 
 class PostAdmin(nested_admin.NestedModelAdmin):
+    class PostImageInline(nested_admin.NestedTabularInline):
+        model = PostImage
+        extra = 0
+        fields = ['image']
+
     class ApplicationInline(nested_admin.NestedTabularInline):
         model = Application
         extra = 0
@@ -18,7 +23,7 @@ class PostAdmin(nested_admin.NestedModelAdmin):
         fields = ['reviewer', 'rating', 'comment']
 
     model = Post
-    inlines = [ApplicationInline, ReviewInline]
+    inlines = [PostImageInline, ApplicationInline, ReviewInline]
     list_display = [
         'id',
         utils.linkify_field('campus'),
