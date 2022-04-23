@@ -39,10 +39,17 @@ class ResidentService:
 
     @staticmethod
     def edit_profile(resident_profile: ResidentProfile, first_name: str = None,
-                     last_name: str = None, mobile_number: str = None) -> ResidentProfile:
-        resident_profile.user.first_name = first_name
-        resident_profile.user.last_name = last_name
-        resident_profile.user.mobile_number = mobile_number
+                     last_name: str = None, mobile_number: str = None, photo: str = None) -> ResidentProfile:
+        user = resident_profile.user
+        if first_name:
+            user.first_name = first_name
+        if last_name:
+            user.last_name = last_name
+        if mobile_number:
+            user.mobile_number = mobile_number
+        if photo:
+            resident_profile.photo = photo
+        user.save()
         resident_profile.save()
         return resident_profile
 

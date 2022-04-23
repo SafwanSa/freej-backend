@@ -48,12 +48,7 @@ class Room(BaseModel):
 
 class ResidentProfile(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='resident_profile')
-    photo = models.FileField(
-        upload_to=utils.PathAndRename(
-            'uploads/residents/photos/{}'.format(time.strftime("%Y/%m/%d"))),
-        max_length=2048,
-        blank=True, null=True
-    )
+    photo = models.URLField(null=True, blank=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='residents')
     is_supervisor = models.BooleanField(default=False)
 
