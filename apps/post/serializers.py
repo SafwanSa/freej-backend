@@ -27,10 +27,17 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class PostImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostImage
+        fields = ['image']
+
+
 class PostSerializer(serializers.ModelSerializer):
     owner = OwnerSerializer()
-    reviews = ReviewSerializer(many=True)
     application = serializers.SerializerMethodField()
+    reviews = ReviewSerializer(many=True)
+    images = PostImageSerializer(many=True)
 
     class Meta:
         model = Post
@@ -49,13 +56,14 @@ class PostSerializer(serializers.ModelSerializer):
 class CreatePostSerializer(serializers.Serializer):
     title = serializers.CharField()
     description = serializers.CharField()
-    # Images
+    images = serializers.ListField(child=serializers.URLField(), required=False, allow_null=True)
 
 
 class UpdatePostSerializer(serializers.Serializer):
     title = serializers.CharField(required=False)
     description = serializers.CharField(required=False)
     is_active = serializers.BooleanField(required=False)
+    images = serializers.ListField(child=serializers.URLField(), required=False, allow_null=True)
 
 
 class RateSerializer(serializers.Serializer):

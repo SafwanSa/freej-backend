@@ -20,7 +20,7 @@ class Post(BaseModel):
 
 class PostImage(BaseModel):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
-    #TODO: image = models.ImageField()
+    image = models.URLField()
 
 
 class Review(BaseModel):

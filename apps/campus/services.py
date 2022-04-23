@@ -39,10 +39,17 @@ class ResidentService:
 
     @staticmethod
     def edit_profile(resident_profile: ResidentProfile, first_name: str = None,
-                     last_name: str = None, mobile_number: str = None) -> ResidentProfile:
-        resident_profile.user.first_name = first_name
-        resident_profile.user.last_name = last_name
-        resident_profile.user.mobile_number = mobile_number
+                     last_name: str = None, mobile_number: str = None, photo: str = None) -> ResidentProfile:
+        user = resident_profile.user
+        if first_name:
+            user.first_name = first_name
+        if last_name:
+            user.last_name = last_name
+        if mobile_number:
+            user.mobile_number = mobile_number
+        if photo:
+            resident_profile.photo = photo
+        user.save()
         resident_profile.save()
         return resident_profile
 
@@ -62,8 +69,13 @@ class BuildingService:
         return new_issue
 
     @staticmethod
-    def report_issue_with_fix(issue: MaintenanceIssue) -> MaintenanceIssue:
-        # TODO: Should we allow the resident to vote only once?
+    def report_issue_with_fix(issue: MaintenanceIssue, resident_profile: ResidentProfile) -> MaintenanceIssue:
+        # Check if the resident has already reported a fix issue
+        reporters = issue.reported_fixed_by.all()
+        if resident_profile in reporters:
+            raise APIError(Error.ALREADY_FIXED_REPORTED)
+        # Add the resident to the reporters
+        issue.reported_fixed_by.add(resident_profile)
         issue.reported_fixed = issue.reported_fixed + 1
         issue.save()
         return issue
