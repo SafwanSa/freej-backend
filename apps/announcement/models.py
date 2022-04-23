@@ -4,6 +4,7 @@ from apps.account.models import User
 from apps.campus.models import Building, Campus
 from enum import Enum
 from core import utils
+import time
 
 
 class Announcement(BaseModel):
@@ -30,5 +31,10 @@ class CommercialAnnouncement(Announcement):
     campus = models.ForeignKey(Campus, on_delete=models.CASCADE, related_name='commercial_announcements')
     impressions = models.IntegerField(default=0)
     advertiser_name = models.CharField(max_length=50)
-    # TODO: Add image or images?
+    image = models.FileField(
+        upload_to=utils.PathAndRename(
+            'uploads/commercials/images/{}'.format(time.strftime("%Y/%m/%d"))),
+        max_length=2048,
+        blank=True, null=True
+    )
     link = models.URLField(null=True, blank=True)
