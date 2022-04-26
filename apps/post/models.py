@@ -38,7 +38,7 @@ class Application(BaseModel):
         Cancelled = 'cancelled'
         Completed = 'completed'
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='applications')
+    beneficiary = models.ForeignKey(ResidentProfile, on_delete=models.CASCADE, related_name='posts_applications')
     status = models.CharField(max_length=20, choices=utils.create_choices_from_enum(ApplicationStatus))
     status_updated_at = models.DateTimeField(auto_now_add=True)
-    beneficiary = models.ForeignKey(ResidentProfile, on_delete=models.CASCADE)
     description = models.TextField(null=True, blank=True)

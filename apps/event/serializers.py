@@ -25,10 +25,40 @@ class HostSerializer(serializers.ModelSerializer):
         return representation
 
 
+class EventJoinerSerializer(serializers.ModelSerializer):
+    class EventJoinerUserSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = User
+            fields = ['first_name', 'last_name', 'mobile_number']
+
+    user = EventJoinerUserSerializer()
+
+    class Meta:
+        model = ResidentProfile
+        fields = ['user']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # for key, value in representation.pop('user').items():
+        #     representation[key] = value
+        representation = representation['user']
+        return representation
+
+
+class EventApplicationSerializer(serializers.ModelSerializer):
+
+    resident_profile = EventJoinerSerializer()
+
+    class Meta:
+        model = EventApplication
+        fields = '__all__'
+
+
 class EventSerializer(serializers.ModelSerializer):
 
     application_status = serializers.SerializerMethodField()
     host = HostSerializer()
+    applications = EventApplicationSerializer(many=True)
 
     class Meta:
         model = Event
