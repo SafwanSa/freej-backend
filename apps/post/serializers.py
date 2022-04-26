@@ -7,17 +7,19 @@ class OwnerSerializer(serializers.ModelSerializer):
     class OwnerUserSerializer(serializers.ModelSerializer):
         class Meta:
             model = User
-            fields = ['id', 'first_name', 'last_name']
+            fields = ['first_name', 'last_name', 'mobile_number']
 
     user = OwnerUserSerializer()
 
     class Meta:
         model = ResidentProfile
-        fields = ['user']
+        fields = ['id', 'user']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation = representation['user']
+        for key, value in representation.pop('user').items():
+            representation[key] = value
+        # representation = representation['user']
         return representation
 
 
