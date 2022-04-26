@@ -28,12 +28,16 @@ class RegisterSerializer(serializers.Serializer):
     room_id = serializers.IntegerField()
     email = serializers.EmailField()
     password = serializers.CharField()
+    name = serializers.CharField()
+    mobile_number = serializers.RegexField(validators._PHONE_REGEX.regex)
 
 
 class ConfirmRegisterSerializer(serializers.Serializer):
     room_id = serializers.IntegerField()
     email = serializers.EmailField()
     password = serializers.CharField()
+    name = serializers.CharField()
+    mobile_number = serializers.RegexField(validators._PHONE_REGEX.regex)
     otp = serializers.CharField(max_length=4)
 
 

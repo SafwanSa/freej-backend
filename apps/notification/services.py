@@ -26,7 +26,7 @@ class NotificationService:
 
     @staticmethod
     def send(
-        type: Notification.NotificationType,
+        type: NotificationType,
         receivers: str,
         title: str = None,
         body: str = None,
@@ -34,7 +34,7 @@ class NotificationService:
         template: str = None,
         extra: dict = None
     ) -> Notification:
-        if type == Notification.NotificationType.Email:
+        if type == NotificationType.Email:
             nf = Notification(
                 type='Email',
                 receivers=receivers,
@@ -51,7 +51,7 @@ class NotificationService:
                 )
             nf.save()
 
-        elif type == Notification.NotificationType.SMS:
+        elif type == NotificationType.SMS:
             nf = Notification(
                 type='SMS',
                 receivers=receivers,
@@ -64,9 +64,9 @@ class NotificationService:
                 )
             nf.save()
 
-        elif type == Notification.NotificationType.PushNotification:
+        elif type == NotificationType.PushNotification:
             nf = Notification(
-                type=Notification.NotificationType.PushNotification.value,
+                type=NotificationType.PushNotification.value,
                 title=title,
                 receivers=receivers,
                 body=body

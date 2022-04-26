@@ -25,7 +25,8 @@ class AccountService:
             raise APIError(Error.INVALID_DOMAIN)
 
     @staticmethod
-    def register_resident(email: str, password: str, room_id: int, send_otp: bool = True) -> OTP:
+    def register_resident(email: str, password: str, room_id: int, name: str,
+                          mobile_number: str, send_otp: bool = True) -> OTP:
         # Check if user exists
         account_exist = AccountService.does_account_exist(username=email)
         if account_exist:
@@ -49,9 +50,11 @@ class AccountService:
         return None
 
     @staticmethod
-    def create_account(username: str, password: str) -> User:
+    def create_account(username: str, password: str, name: str, mobile_number: str) -> User:
         new_account = User(
             username=username,
+            first_name=name,
+            mobile_number=mobile_number,
             is_superuser=False,
         )
         password_validation.validate_password(password, new_account)
