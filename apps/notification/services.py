@@ -39,12 +39,13 @@ class NotificationService:
                 template=template,
                 data=data,
             )
-            nf.result = NotificationService.send_email_notification(
-                title=title,
-                template=template,
-                data=data,
-                receivers=receivers
-            )
+            if Conf.ACTIVATE_EMAILS():
+                nf.result = NotificationService.send_email_notification(
+                    title=title,
+                    template=template,
+                    data=data,
+                    receivers=receivers
+                )
             nf.save()
 
         elif type == NotificationType.SMS:
@@ -53,10 +54,11 @@ class NotificationService:
                 receivers=receivers,
                 body=body
             )
-            nf.result = NotificationService.send_sms_notification(
-                receivers,
-                body
-            )
+            if Conf.ACTIVATE_SMS:
+                nf.result = NotificationService.send_sms_notification(
+                    receivers,
+                    body
+                )
             nf.save()
         else:
             raise ValidationError('Unsupported notification type!')
