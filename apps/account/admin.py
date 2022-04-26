@@ -36,5 +36,25 @@ class OTPAdmin(admin.ModelAdmin):
     list_display = ['otp', 'username', 'is_active', 'expiration_date']
 
 
+class FCMTokenAdmin(admin.ModelAdmin):
+    model = FCMToken
+
+    list_display = [
+        'user',
+        'is_active',
+        'modified_at'
+    ]
+
+    list_filter = [
+        'is_active',
+        'modified_at'
+    ]
+
+    search_fields = [
+        'user__username'
+    ]
+
+
 admin.site.register(User, UserAdmin)
 admin.site.register(OTP, OTPAdmin)
+admin.site.register(FCMToken, FCMTokenAdmin)

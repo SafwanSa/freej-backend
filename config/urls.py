@@ -41,6 +41,7 @@ urlpatterns = [
     path(f'api/{API_VERSION}/announcements/', include('apps.announcement.urls')),
     path(f'api/{API_VERSION}/events/', include('apps.event.urls')),
     path(f'api/{API_VERSION}/posts/', include('apps.post.urls')),
+    path(f'api/{API_VERSION}/notifications/', include('apps.notification.urls')),
     path(f'api/{API_VERSION}/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('admin/', admin.site.urls),
 ]

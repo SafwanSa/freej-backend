@@ -64,7 +64,7 @@ class MaintenanceIssue(BaseModel):
         Other = 'other'
 
     class MaintenanceIssueStatus(Enum):
-        Pending = 'Pending'
+        Pending = 'pending'
         Canceled = 'canceled'
         Fixed = 'fixed'
     reported_by = models.ForeignKey(ResidentProfile, on_delete=models.CASCADE, related_name='reported_issues')

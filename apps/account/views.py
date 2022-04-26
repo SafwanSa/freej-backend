@@ -12,6 +12,7 @@ from core.errors import Error, APIError
 from rest_framework.pagination import PageNumberPagination
 from .services import *
 from apps.campus.serializers import ResidentProfileSerializer
+from apps.campus.permissions import ResidentProfileAccess
 
 
 class RegisterView(APIView):
@@ -76,3 +77,29 @@ class ChangePasswordView(APIView):
         serializer.is_valid(raise_exception=True)
         user = AuthService.change_password(**serializer.data)
         return Response({'message': _('Password changed successfully')})
+
+# ------------------------------- FCM Token Views -------------------------------
+
+
+class FCMTokenView(APIView):
+    permission_classes = [IsAuthenticated, ResidentProfileAccess]
+
+    def post(self, request):
+        serializer = UpdateFCMTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance = AccountService.get_or_create_fcm_token(
+            user=request.user,
+            is_active=True,
+            **serializer.validated_data
+        )
+        return Response(FCMTokenSerializer(instance).data)
+
+    def delete(self, request):
+        serializer = UpdateFCMTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance = AccountService.get_or_create_fcm_token(
+            user=request.user,
+            is_active=False,
+            **serializer.validated_data
+        )
+        return Response(FCMTokenSerializer(instance).data)
