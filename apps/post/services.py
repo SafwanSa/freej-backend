@@ -11,6 +11,15 @@ class PostService:
 
     @staticmethod
     def rate_post(resident_profile: ResidentProfile, post: Post, rating: int) -> Post:
+
+        applications = queries.get_all_post_applications_by(
+            post=post,
+            beneficiary=resident_profile,
+            status=Application.ApplicationStatus.Completed
+        )
+        if not applications.exists():
+            raise APIError(Error.MUST_HAVE_COMPLETED_APP)
+
         reviews = queries.get_post_reviews(post=post)
         reviews = reviews.filter(reviewer=resident_profile)
         if reviews.exists():
@@ -142,13 +151,14 @@ class PostService:
         application.status = Application.ApplicationStatus.Accepted.value
         application.save()
 
-        # Reject all other applications
+        # Reject all other applications if the post was a Request
         post = application.post
-        all_applications = queries.get_all_post_applications_by(post=post, beneficiary=None, status=None)
-        other_applications = all_applications.exclude(id=application.id)
-        for app in other_applications:
-            app.status = Application.ApplicationStatus.Rejected.value
-            app.save()
+        if post.type == Post.PostType.Request.value:
+            all_applications = queries.get_all_post_applications_by(post=post, beneficiary=None, status=None)
+            other_applications = all_applications.exclude(id=application.id)
+            for app in other_applications:
+                app.status = Application.ApplicationStatus.Rejected.value
+                app.save()
         return application
 
     @staticmethod

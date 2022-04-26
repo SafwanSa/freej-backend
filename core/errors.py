@@ -34,6 +34,7 @@ class Error(Enum):
     MUST_BE_ACCEPTED = {'code': -617, 'detail': _("It must be an accepted application!")}
     UNSUPPORTED_ACTION = {'code': -400, 'detail': _("Unsupported action!")}
     ALREADY_FIXED_REPORTED = {'code': -936, 'detail': _("You have already reported a fix!")}
+    MUST_HAVE_COMPLETED_APP = {'code': -916, 'detail': _("You must have a completed application to rate this post!")}
 
 
 class APIError(Exception):
