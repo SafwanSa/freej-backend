@@ -19,3 +19,7 @@ def get_active_otp_with(username: str, otp: str) -> OTP:
 
 def get_active_requested_otps_of(username: str) -> OTP:
     return OTP.objects.filter(username=username, is_active=True)
+
+
+def get_fcm_token_with(user: User, token: str) -> FCMToken:
+    return FCMToken.objects.get(token=token, user=user)

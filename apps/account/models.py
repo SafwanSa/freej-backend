@@ -100,3 +100,9 @@ class OTP(BaseModel):
 
     def __str__(self) -> str:
         return self.otp
+
+
+class FCMToken(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='fcm_tokens')
+    token = models.CharField(max_length=255)
+    is_active = models.BooleanField(default=True)
