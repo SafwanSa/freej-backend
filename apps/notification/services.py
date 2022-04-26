@@ -71,19 +71,7 @@ class NotificationService:
                 receivers=receivers,
                 body=body
             )
-            usernames = receivers.split(',')
-            tokens = accountQueries.get_active_tokens_with(usernames=usernames)
-            if tokens.exists():
-                fcms = tokens.values_list('token', flat=True)[::1]
-            else:
-                fcms = []
-            push_service = FCMNotification(api_key=settings.FIREBASE_API_KEY)
-            nf.result = push_service.notify_multiple_devices(
-                registration_ids=fcms,
-                message_title=title,
-                message_body=body,
-                badge=1
-            )
+            nf.result = NotificationService.send_push_notification(receivers=receivers, title=title, body=body)
             nf.save()
 
         else:
@@ -149,3 +137,18 @@ class NotificationService:
         response = urllib.request.urlopen(url=url, data=data)
         return response.read()
         """
+
+    def send_push_notification(receivers: str, title: str, body: str) -> str:
+        usernames = receivers.split(',')
+        tokens = accountQueries.get_active_tokens_with(usernames=usernames)
+        if tokens.exists():
+            fcms = tokens.values_list('token', flat=True)[::1]
+        else:
+            fcms = []
+        push_service = FCMNotification(api_key=settings.FIREBASE_API_KEY)
+        return push_service.notify_multiple_devices(
+            registration_ids=fcms,
+            message_title=title,
+            message_body=body,
+            badge=1
+        )
