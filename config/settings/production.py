@@ -98,7 +98,7 @@ DEFAULT_FILE_STORAGE = "config.storage_backends.MediaStorage"
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-from-email
 DEFAULT_FROM_EMAIL = env(
-    "DJANGO_DEFAULT_FROM_EMAIL", default="test_project <noreply@example.com>"
+    "DJANGO_DEFAULT_FROM_EMAIL", default="safwan9f@gmail.com"
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#server-email
 SERVER_EMAIL = env("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
