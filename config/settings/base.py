@@ -182,6 +182,14 @@ EMAIL_BACKEND = env(
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-timeout
 EMAIL_TIMEOUT = 5
 
+# EMAIL_USE_TLS = True
+
+# EMAIL_HOST = 'email-smtp.eu-west-1.amazonaws.com'
+# EMAIL_HOST_USER = ''
+# EMAIL_HOST_PASSWORD = ''
+# EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = 'safwan9f@gmail.com'
+
 # ADMIN
 # ------------------------------------------------------------------------------
 # Django Admin URL.

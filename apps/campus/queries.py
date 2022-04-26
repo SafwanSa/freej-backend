@@ -2,6 +2,10 @@ from .models import *
 from django.db.models import Q
 from typing import Iterable
 from core.errors import Error, APIError
+from apps.post import queries as postQueries
+from apps.event import queries as eventQueries
+from apps.post.models import Post
+from apps.event.models import Event
 
 
 def get_all_campuses() -> Iterable[Campus]:
@@ -65,3 +69,19 @@ def get_issue_by_id(id: int) -> MaintenanceIssue:
 
 def get_building_issues(building: Building) -> Iterable[MaintenanceIssue]:
     return building.issues.filter(is_deleted=False).order_by('-created_at')
+
+
+def get_resident_posts_by(resident_profile: ResidentProfile) -> Iterable[Post]:
+    all_posts = postQueries.get_all_campus_posts(campus=resident_profile.room.building.campus)
+    created_posts = resident_profile.created_posts.filter(is_deleted=False)
+    applied_posts_ids = resident_profile.posts_applications.filter(is_deleted=False).values_list('post', flat=True)
+    applied_posts = all_posts.filter(id__in=applied_posts_ids)
+    return created_posts.union(applied_posts).order_by('-created_at')
+
+
+def get_resident_events_by(resident_profile: ResidentProfile) -> Iterable[Event]:
+    all_events = eventQueries.get_all_campus_events(campus=resident_profile.room.building.campus)
+    hosted_events = resident_profile.hosted_events.filter(is_deleted=False)
+    applied_events_ids = resident_profile.events_applications.filter(is_deleted=False).values_list('event', flat=True)
+    applied_events = all_events.filter(id__in=applied_events_ids)
+    return hosted_events.union(applied_events).order_by('-created_at')

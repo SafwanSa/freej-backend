@@ -7,17 +7,19 @@ class OwnerSerializer(serializers.ModelSerializer):
     class OwnerUserSerializer(serializers.ModelSerializer):
         class Meta:
             model = User
-            fields = ['id', 'first_name', 'last_name']
+            fields = ['first_name', 'last_name', 'mobile_number']
 
     user = OwnerUserSerializer()
 
     class Meta:
         model = ResidentProfile
-        fields = ['user']
+        fields = ['id', 'user']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation = representation['user']
+        for key, value in representation.pop('user').items():
+            representation[key] = value
+        # representation = representation['user']
         return representation
 
 
@@ -33,23 +35,53 @@ class PostImageSerializer(serializers.ModelSerializer):
         fields = ['image']
 
 
+class BeneficiarySerializer(serializers.ModelSerializer):
+    class BeneficiaryUserSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = User
+            fields = ['first_name', 'last_name', 'mobile_number']
+
+    user = BeneficiaryUserSerializer()
+
+    class Meta:
+        model = ResidentProfile
+        fields = ['user']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # for key, value in representation.pop('user').items():
+        #     representation[key] = value
+        representation = representation['user']
+        return representation
+
+
+class ApplicationSerializer(serializers.ModelSerializer):
+
+    beneficiary = BeneficiarySerializer()
+
+    class Meta:
+        model = Application
+        fields = '__all__'
+
+
 class PostSerializer(serializers.ModelSerializer):
     owner = OwnerSerializer()
-    application = serializers.SerializerMethodField()
+    application_status = serializers.SerializerMethodField()
     reviews = ReviewSerializer(many=True)
     images = PostImageSerializer(many=True)
+    applications = ApplicationSerializer(many=True)
 
     class Meta:
         model = Post
         fields = '__all__'
 
-    def get_application(self, obj):
+    def get_application_status(self, obj):
         if self.context.get('show_application_status'):
             resident_profile = self.context.get('resident_profile')
             applications = queries.get_all_post_applications_by(beneficiary=resident_profile, post=obj)
             if applications.exists():
                 application = applications.first()
-                return {'id': application.id, 'status': application.status}
+                return application.status
         return None
 
 
@@ -68,9 +100,3 @@ class UpdatePostSerializer(serializers.Serializer):
 
 class RateSerializer(serializers.Serializer):
     rating = serializers.IntegerField()
-
-
-class ApplicationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Application
-        fields = '__all__'
