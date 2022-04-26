@@ -1,0 +1,6 @@
+{% extends "email/base.html" %}
+{% load i18n %}
+{% block content %}
+    <p>Hello {{email}}</p>
+    <p>Here is your OTP for freej app: {{otp}}</p>
+{% endblock %}
