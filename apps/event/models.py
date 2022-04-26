@@ -8,7 +8,7 @@ from core import utils
 class Event(BaseModel):
     class EventType(Enum):
         Study = 'study'
-        HelpSession = 'Help Session'
+        HelpSession = 'helpSession'
         Sport = 'sport'
         Game = 'game'
         Other = 'other'
