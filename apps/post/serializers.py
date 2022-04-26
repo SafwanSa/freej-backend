@@ -45,13 +45,13 @@ class BeneficiarySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ResidentProfile
-        fields = ['user']
+        fields = ['id', 'user']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        # for key, value in representation.pop('user').items():
-        #     representation[key] = value
-        representation = representation['user']
+        for key, value in representation.pop('user').items():
+            representation[key] = value
+        # representation = representation['user']
         return representation
 
 

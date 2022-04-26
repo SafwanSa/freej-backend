@@ -52,3 +52,4 @@ toml==0.10.2
 uritemplate==4.1.1
 urllib3==1.26.7
 watchtower==1.0.6
+pyfcm==1.5.4
