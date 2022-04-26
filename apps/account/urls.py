@@ -11,4 +11,6 @@ urlpatterns = [
     path('request-change-password/', views.RequestOTPView.as_view()),
     path('otp-check/', views.CheckOTPView.as_view()),
     path('change-password/', views.ChangePasswordView.as_view()),
+
+    path('fcm-token/', views.FCMTokenView.as_view()),
 ]

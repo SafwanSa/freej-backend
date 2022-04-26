@@ -1,6 +1,5 @@
 from .models import *
 from . import queries
-from enum import Enum
 from apps.utility.services import ConfigService as Conf
 from django.core.mail import EmailMultiAlternatives
 import json
@@ -12,18 +11,20 @@ from django.template import TemplateDoesNotExist
 from django.core.validators import validate_email
 import re
 from core.validators import _PHONE_REGEX
+from enum import Enum
 
 
 class NotificationType(Enum):
     SMS = 'SMS'
     Email = 'Email'
+    PushNotification = 'PushNotification'
 
 
 class NotificationService:
 
     @staticmethod
     def send(
-        type: NotificationType,
+        type: Notification.NotificationType,
         receivers: str,
         title: str = None,
         body: str = None,
@@ -31,7 +32,7 @@ class NotificationService:
         template: str = None,
         extra: dict = None
     ) -> Notification:
-        if type == NotificationType.Email:
+        if type == Notification.NotificationType.Email:
             nf = Notification(
                 type='Email',
                 receivers=receivers,
@@ -48,7 +49,7 @@ class NotificationService:
                 )
             nf.save()
 
-        elif type == NotificationType.SMS:
+        elif type == Notification.NotificationType.SMS:
             nf = Notification(
                 type='SMS',
                 receivers=receivers,

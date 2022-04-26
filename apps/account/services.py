@@ -61,6 +61,32 @@ class AccountService:
         new_account.save()
         return new_account
 
+    @staticmethod
+    def get_or_create_fcm_token(user: User, token: str, is_active: bool) -> FCMToken:
+        """
+        This function does two things:
+            1- Activate or create activated FCM Token
+            2- Deactivate or create deactivated FCM Token
+
+        Args:
+            user (User): User instance
+            token (str): FCM Token
+            is_active (bool): If True, option 1, else option 2
+
+        Returns:
+            FCMToken: FCMToken instance
+        """
+        try:
+            fcmToken = queries.get_fcm_token_with(user=user, token=token)
+            if fcmToken.is_active != is_active:
+                fcmToken.is_active = is_active
+                fcmToken.save()
+            return fcmToken
+        except FCMToken.DoesNotExist:
+            new_token = FCMToken(token=token, user=user, is_active=is_active)
+            new_token.save()
+            return new_token
+
 
 class AuthService:
 

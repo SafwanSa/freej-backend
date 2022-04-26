@@ -51,3 +51,15 @@ class CheckOTPSerializer(serializers.Serializer):
 class ChangePasswordSerializer(serializers.Serializer):
     username = serializers.EmailField()
     new_password = serializers.CharField()
+
+# ------------------------------- FCM Token Serializers -------------------------------
+
+
+class UpdateFCMTokenSerializer(serializers.Serializer):
+    token = serializers.CharField()
+
+
+class FCMTokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FCMToken
+        fields = '__all__'
