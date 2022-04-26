@@ -1,3 +1,5 @@
+from apps.event.serializers import EventSerializer
+from apps.post.serializers import PostSerializer
 from .serializers import *
 from .models import *
 from rest_framework.response import Response
@@ -74,4 +76,34 @@ class BuildingsView(APIView):
         campus = queries.get_campus_by_id(id=campus_id)
         buildings = queries.get_campus_buildings(campus=campus)
         serializer = BuildingSerializer(buildings, many=True)
+        return Response(serializer.data)
+
+# ------------------------------------------ # Resident specific data views # ------------------------------------------
+
+
+class ResidentPostsView(APIView):
+    permission_classes = [IsAuthenticated, ResidentProfileAccess]
+    description = 'All the posts the user applied to or created'
+
+    def get(self, request):
+        resident_profile = queries.get_resident_profile_by(user=request.user)
+        posts = queries.get_resident_posts_by(resident_profile=resident_profile)
+        serializer = PostSerializer(posts, many=True, context={
+            'show_application_status': True,
+            'resident_profile': resident_profile
+        })
+        return Response(serializer.data)
+
+
+class ResidentEventsView(APIView):
+    permission_classes = [IsAuthenticated, ResidentProfileAccess]
+    description = 'All the events that the resident is joined/hosted'
+
+    def get(self, request):
+        resident_profile = queries.get_resident_profile_by(user=request.user)
+        events = queries.get_resident_events_by(resident_profile=resident_profile)
+        serializer = EventSerializer(events, many=True, context={
+            'show_application_status': True,
+            'resident_profile': resident_profile
+        })
         return Response(serializer.data)
