@@ -12,6 +12,8 @@ from django.core.validators import validate_email
 import re
 from core.validators import _PHONE_REGEX
 from enum import Enum
+from pyfcm import FCMNotification
+from apps.account import queries as accountQueries
 
 
 class NotificationType(Enum):
@@ -61,6 +63,29 @@ class NotificationService:
                     body
                 )
             nf.save()
+
+        elif type == Notification.NotificationType.PushNotification:
+            nf = Notification(
+                type=Notification.NotificationType.PushNotification.value,
+                title=title,
+                receivers=receivers,
+                body=body
+            )
+            usernames = receivers.split(',')
+            tokens = accountQueries.get_active_tokens_with(usernames=usernames)
+            if tokens.exists():
+                fcms = tokens.values_list('token', flat=True)[::1]
+            else:
+                fcms = []
+            push_service = FCMNotification(api_key=settings.FIREBASE_API_KEY)
+            nf.result = push_service.notify_multiple_devices(
+                registration_ids=fcms,
+                message_title=title,
+                message_body=body,
+                badge=1
+            )
+            nf.save()
+
         else:
             raise ValidationError('Unsupported notification type!')
 
