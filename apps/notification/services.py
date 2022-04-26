@@ -67,7 +67,7 @@ class NotificationService:
         template: str,
         data: dict = None,
         bcc: list = None
-    ) -> None:
+    ) -> str:
         def is_valid(email: str) -> bool:
             try:
                 validate_email(email)
@@ -93,7 +93,7 @@ class NotificationService:
             )
 
             msg.attach_alternative(html.render(data), "text/html")
-            msg.send()
+            return msg.send()
         except TemplateDoesNotExist:
             raise ValidationError('Template does not exist!')
 

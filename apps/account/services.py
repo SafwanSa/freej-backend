@@ -7,6 +7,7 @@ from apps.notification.services import NotificationService, NotificationType
 from apps.account.models import GroupEnum, User
 from apps.campus import queries as campusQueries
 from apps.campus.models import Campus
+import json
 
 
 class AccountService:
@@ -89,7 +90,16 @@ class AuthService:
             otp.save()
         # Create a new one
         new_otp = OTP.objects.create(username=username)
-        # TODO: Send Email notification with OTP
+        NotificationService.send(
+            type=NotificationType.Email,
+            template='email/otp.html',
+            title='Your freej OTP',
+            receivers='safwan@yumealz.com',
+            data=json.dumps({
+                "email": username,
+                "otp": new_otp.otp
+            })
+        )
         return new_otp
 
     @staticmethod
