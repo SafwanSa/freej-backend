@@ -94,7 +94,7 @@ class AuthService:
             type=NotificationType.Email,
             template='email/otp.html',
             title='Your freej OTP',
-            receivers='safwan@yumealz.com',
+            receivers=username,
             data=json.dumps({
                 "email": username,
                 "otp": new_otp.otp
