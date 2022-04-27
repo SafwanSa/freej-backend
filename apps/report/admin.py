@@ -3,9 +3,17 @@ from core.admin import BaseAdmin
 from .models import *
 from . import queries
 from core import utils
+from .admin_forms import ReportAdminForm
 
 
 class ReportAdmin(BaseAdmin):
+    form = ReportAdminForm
+
+    def get_form(self, request, *args, **kwargs):
+        form = super().get_form(request, *args, **kwargs)
+        form.current_user = request.user
+        return form
+
     model = Report
     list_display = [
         'id',
@@ -13,7 +21,7 @@ class ReportAdmin(BaseAdmin):
         'get_instance',
         'created_at',
         'is_checked',
-        'checked_by',
+        utils.linkify_field('checked_by'),
     ]
     list_filter = ['instance_type', 'created_at', 'is_checked']
 
