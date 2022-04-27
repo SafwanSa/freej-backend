@@ -1,4 +1,4 @@
-from apps.utility.models import BaseModel
+from core.models import BaseModel
 from django.db import models
 from apps.account.models import User
 from enum import Enum

@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from enum import Enum
 from core.validators import _PHONE_REGEX, _STUDENT_ID_REGEX
-from apps.utility.models import BaseModel
+from core.models import BaseModel
 from core import utils
 from datetime import datetime, timedelta
 from apps.utility.services import ConfigService as Conf
