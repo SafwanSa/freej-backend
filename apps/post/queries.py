@@ -54,3 +54,10 @@ def get_application_by_id(id: int) -> Application:
         return Application.objects.get(id=id)
     except Application.DoesNotExist:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[Application._meta.model_name])
+
+
+def get_post_by_id(id: int) -> Post:
+    try:
+        return Post.objects.get(id=id)
+    except Post.DoesNotExist:
+        raise APIError(Error.INSTANCE_NOT_FOUND, extra=[Post._meta.model_name])
