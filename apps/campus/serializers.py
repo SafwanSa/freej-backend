@@ -47,9 +47,29 @@ class ResidentProfileSerializer(serializers.ModelSerializer):
             exclude = ['building']
 
     class BuildingSerializer(serializers.ModelSerializer):
+        class SupervisorSerializer(serializers.ModelSerializer):
+            class SupervisorUserSerializer(serializers.ModelSerializer):
+                class Meta:
+                    model = User
+                    fields = ['first_name', 'last_name', 'mobile_number']
+            user = SupervisorUserSerializer()
+
+            class Meta:
+                model = ResidentProfile
+                fields = ['id', 'user']
+
+            def to_representation(self, instance):
+                representation = super().to_representation(instance)
+                for key, value in representation.pop('user').items():
+                    representation[key] = value
+                # representation = representation['user']
+                return representation
+
+        supervisor = SupervisorSerializer()
+
         class Meta:
             model = Building
-            exclude = ['supervisor', 'campus']
+            exclude = ['campus']
 
     user = UserSerializer()
     campus_details = serializers.SerializerMethodField()
