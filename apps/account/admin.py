@@ -2,10 +2,10 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from .models import *
-import nested_admin
+from core.admin import BaseAdmin, BaseStackedInline, BaseTabularInline
 
 
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(BaseAdmin):
     model = User
     list_display = [
         'username', 'first_name', 'last_name', 'mobile_number', 'get_user_groups', 'date_joined'
@@ -31,12 +31,12 @@ class UserAdmin(admin.ModelAdmin):
     get_user_groups.short_description = 'Groups'
 
 
-class OTPAdmin(admin.ModelAdmin):
+class OTPAdmin(BaseAdmin):
     model = OTP
     list_display = ['otp', 'username', 'is_active', 'expiration_date']
 
 
-class FCMTokenAdmin(admin.ModelAdmin):
+class FCMTokenAdmin(BaseAdmin):
     model = FCMToken
 
     list_display = [

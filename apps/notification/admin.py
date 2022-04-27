@@ -1,9 +1,10 @@
 from django.contrib import admin
 from .models import *
+from core.admin import BaseAdmin, BaseStackedInline, BaseTabularInline
 
 
 @admin.register(Notification)
-class NotificationAdmin(admin.ModelAdmin):
+class NotificationAdmin(BaseAdmin):
     model = Notification
     list_display = [
         'receivers',

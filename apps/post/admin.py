@@ -1,25 +1,22 @@
 from django.contrib import admin
 from .models import *
 from django.utils.translation import gettext_lazy as _
-import nested_admin
+from core.admin import BaseAdmin, BaseStackedInline, BaseTabularInline
 from core import utils
 
 
-class PostAdmin(nested_admin.NestedModelAdmin):
-    class PostImageInline(nested_admin.NestedTabularInline):
+class PostAdmin(BaseAdmin):
+    class PostImageInline(BaseTabularInline):
         model = PostImage
-        extra = 0
         fields = ['image']
 
-    class ApplicationInline(nested_admin.NestedTabularInline):
+    class ApplicationInline(BaseTabularInline):
         model = Application
-        extra = 0
         fields = ['beneficiary', 'status', 'status_updated_at']
         readonly_fields = ['status_updated_at']
 
-    class ReviewInline(nested_admin.NestedTabularInline):
+    class ReviewInline(BaseTabularInline):
         model = Review
-        extra = 0
         fields = ['reviewer', 'rating', 'comment']
 
     model = Post
@@ -37,7 +34,7 @@ class PostAdmin(nested_admin.NestedModelAdmin):
     search_fields = ['owner__user__username', 'campus__name_ar', 'campus__name_en']
 
 
-class ApplicationAdmin(nested_admin.NestedModelAdmin):
+class ApplicationAdmin(BaseAdmin):
     model = Application
     list_display = [
         'id',
@@ -51,7 +48,7 @@ class ApplicationAdmin(nested_admin.NestedModelAdmin):
     search_fields = ['beneficiary__user__username', 'post__campus__name_ar', 'post__campus__name_en']
 
 
-class ReviewAdmin(nested_admin.NestedModelAdmin):
+class ReviewAdmin(BaseAdmin):
     model = Review
     list_display = [
         'id',

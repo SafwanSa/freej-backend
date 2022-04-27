@@ -2,9 +2,10 @@ from django.contrib import admin
 from .models import *
 from .admin_forms import ConfigAdminForm
 from apps.account.models import GroupEnum
+from core.admin import BaseAdmin, BaseStackedInline, BaseTabularInline
 
 
-class ConfigAdmin(admin.ModelAdmin):
+class ConfigAdmin(BaseAdmin):
     form = ConfigAdminForm
 
     def get_form(self, request, obj=None, **kwargs):
