@@ -51,8 +51,7 @@ class EventService:
             # Delete previous images
             old_images = queries.get_event_images(event=event)
             for img in old_images:
-                img.is_deleted = True
-                img.save()
+                img.delete()
 
             # Add new images
             for url in images:
@@ -68,8 +67,7 @@ class EventService:
     def delete_event(resident_profile: ResidentProfile, event: Event) -> Event:
         if resident_profile != event.host:
             raise APIError(Error.EVENT_HOST_ONLY)
-        event.is_deleted = True
-        event.save()
+        event.delete()
         # TODO: Notify all joiners
         return event
 
