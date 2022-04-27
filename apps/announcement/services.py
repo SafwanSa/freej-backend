@@ -26,6 +26,5 @@ class AnnouncementService:
 
     @staticmethod
     def delete_building_announcement(announcement=BuildingAnnouncement) -> BuildingAnnouncement:
-        announcement.is_deleted = True
-        announcement.save()
+        announcement.delete()
         return announcement

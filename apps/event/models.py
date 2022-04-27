@@ -1,5 +1,5 @@
 from django.db import models
-from apps.utility.models import BaseModel
+from core.models import BaseModel
 from apps.campus.models import ResidentProfile, Campus
 from enum import Enum
 from core import utils
@@ -28,6 +28,11 @@ class Event(BaseModel):
 
     def __str__(self) -> str:
         return f'{self.campus}-{self.name}'
+
+
+class EventImage(BaseModel):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='images')
+    image = models.URLField()
 
 
 class EventApplication(BaseModel):

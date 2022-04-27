@@ -14,7 +14,7 @@ class EventService:
 
     @staticmethod
     def create_event(resident_profile: ResidentProfile, type: str, name: str,
-                     description: str, date: str, location_url: str = None) -> Event:
+                     description: str, date: str, location_url: str = None, images: list = None) -> Event:
         campus = resident_profile.room.building.campus
         new_event = Event.objects.create(
             host=resident_profile,
@@ -26,12 +26,18 @@ class EventService:
             date=date,
             status=Event.EventStatus.Open.value
         )
+        if images is not None and len(images) != 0:
+            for url in images:
+                new_image = EventImage.objects.create(
+                    event=new_event,
+                    image=url
+                )
         # TODO: Notify all residents of campus
         return new_event
 
     @staticmethod
     def update_event(resident_profile: ResidentProfile, event: Event, type: str, name: str,
-                     description: str, date: str, location_url: str = None) -> Event:
+                     description: str, date: str, location_url: str = None, images: list = None) -> Event:
         if resident_profile != event.host:
             raise APIError(Error.EVENT_HOST_ONLY)
         event.name = name
@@ -40,6 +46,20 @@ class EventService:
         event.location_url = location_url
         event.date = date
         event.save()
+
+        if images is not None and len(images) != 0:
+            # Delete previous images
+            old_images = queries.get_event_images(event=event)
+            for img in old_images:
+                img.delete()
+
+            # Add new images
+            for url in images:
+                new_image = EventImage.objects.create(
+                    event=event,
+                    image=url
+                )
+
         # TODO: Notify all joiners
         return event
 
@@ -47,8 +67,7 @@ class EventService:
     def delete_event(resident_profile: ResidentProfile, event: Event) -> Event:
         if resident_profile != event.host:
             raise APIError(Error.EVENT_HOST_ONLY)
-        event.is_deleted = True
-        event.save()
+        event.delete()
         # TODO: Notify all joiners
         return event
 
