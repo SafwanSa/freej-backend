@@ -75,6 +75,15 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = '__all__'
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        images = representation.pop('images')
+        representation['images'] = []
+        for image in images:
+            representation['images'].append(image.get(('image')))
+
+        return representation
+
     def get_application_status(self, obj):
         if self.context.get('show_application_status'):
             resident_profile = self.context.get('resident_profile')
