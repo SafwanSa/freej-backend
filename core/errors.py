@@ -35,6 +35,8 @@ class Error(Enum):
     UNSUPPORTED_ACTION = {'code': -400, 'detail': _("Unsupported action!")}
     ALREADY_FIXED_REPORTED = {'code': -936, 'detail': _("You have already reported a fix!")}
     MUST_HAVE_COMPLETED_APP = {'code': -916, 'detail': _("You must have a completed application to rate this post!")}
+    SUPERVISOR_CANNOT_CHANGE_ROOM = {'code': -911,
+                                     'detail': _("Building supervisors cannot change building. Please contact us!")}
 
 
 class APIError(Exception):

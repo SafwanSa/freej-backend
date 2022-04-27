@@ -42,7 +42,7 @@ class ResidentService:
 
     @staticmethod
     def edit_profile(resident_profile: ResidentProfile, first_name: str = None,
-                     last_name: str = None, mobile_number: str = None, photo: str = None) -> ResidentProfile:
+                     last_name: str = None, mobile_number: str = None, photo: str = None, room_id: int = None) -> ResidentProfile:
         user = resident_profile.user
         if first_name:
             user.first_name = first_name
@@ -52,6 +52,11 @@ class ResidentService:
             user.mobile_number = mobile_number
         if photo:
             resident_profile.photo = photo
+        if room_id:
+            room = queries.get_room_by_id(id=room_id)
+            if resident_profile.is_supervisor and room.building != resident_profile.room.building:
+                raise APIError(Error.SUPERVISOR_CANNOT_CHANGE_ROOM)
+            resident_profile.room = room
         user.save()
         resident_profile.save()
         return resident_profile

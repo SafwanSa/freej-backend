@@ -109,6 +109,7 @@ class EditProfileSerializer(serializers.Serializer):
     last_name = serializers.CharField(allow_null=True)
     mobile_number = serializers.RegexField(_PHONE_REGEX.regex, allow_null=True)
     photo = serializers.URLField(required=False, allow_null=True)
+    room_id = serializers.IntegerField(required=False, allow_null=True)
 
 
 class MaintenanceIssueSerializer(serializers.ModelSerializer):
