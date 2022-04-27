@@ -56,6 +56,20 @@ class ResidentService:
         resident_profile.save()
         return resident_profile
 
+    @staticmethod
+    def make_supervisor(resident_profile: ResidentProfile) -> None:
+        resident_profile.is_supervisor = True
+        resident_profile.save()
+        group, created = Group.objects.get_or_create(name=GroupEnum.Supervisor.value)
+        group.user_set.add(resident_profile.user)
+
+    @staticmethod
+    def remove_supervisor(resident_profile: ResidentProfile) -> None:
+        resident_profile.is_supervisor = False
+        resident_profile.save()
+        group, created = Group.objects.get_or_create(name=GroupEnum.Supervisor.value)
+        group.user_set.remove(resident_profile.user)
+
 
 class BuildingService:
 
@@ -82,3 +96,11 @@ class BuildingService:
         issue.reported_fixed = issue.reported_fixed + 1
         issue.save()
         return issue
+
+    @staticmethod
+    def update_supervisor(building: Building) -> None:
+        building_residents = queries.get_all_building_residents(building=building)
+        for resident in building_residents:
+            ResidentService.remove_supervisor(resident_profile=resident)
+        if building.supervisor:
+            ResidentService.make_supervisor(resident_profile=building.supervisor)
