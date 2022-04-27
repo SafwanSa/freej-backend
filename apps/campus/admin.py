@@ -2,14 +2,19 @@ from django.contrib import admin
 from .models import *
 from django.utils.translation import gettext_lazy as _
 from core.admin import BaseAdmin, BaseStackedInline, BaseTabularInline
+from django_object_actions import DjangoObjectActions
 from core import utils
 from . import queries
+from .services import BuildingService
+from .admin_forms import BuildingAdminForm
 
 
 class CampusAdmin(BaseAdmin):
     class BuildingInline(BaseTabularInline):
+        form = BuildingAdminForm
         model = Building
         fields = ['name', 'supervisor', 'whatsApp_link']
+        # readonly_fields = ['supervisor']
 
     model = Campus
     inlines = [BuildingInline]
@@ -23,11 +28,12 @@ class CampusAdmin(BaseAdmin):
     get_num_of_residents.short_description = 'Num. Residents'
 
 
-class BuildingAdmin(BaseAdmin):
+class BuildingAdmin(DjangoObjectActions, BaseAdmin):
     class RoomInline(BaseTabularInline):
         model = Room
         fields = ['name']
 
+    form = BuildingAdminForm
     model = Building
     inlines = [RoomInline]
     list_display = [
@@ -46,11 +52,17 @@ class BuildingAdmin(BaseAdmin):
         return count
     get_num_of_residents.short_description = 'Num. Residents'
 
+    def update_supervisor(modeladmin, request, queryset):
+        BuildingService.update_supervisor(queryset)
+
+    change_actions = ('update_supervisor',)
+
 
 class RoomAdmin(BaseAdmin):
     class ResidentInline(BaseTabularInline):
         model = ResidentProfile
         fields = ['user', 'is_supervisor']
+        readonly_fields = ['is_supervisor']
 
     model = Building
     inlines = [ResidentInline]
@@ -89,6 +101,7 @@ class ResidentProfileAdmin(BaseAdmin):
         'is_supervisor',
         'created_at'
     ]
+    readonly_fields = ['is_supervisor']
     list_filter = ['room__building__campus', 'created_at']
     search_fields = ['user__username', 'user__first_name', 'user__last_name', 'user__mobile_number']
 
