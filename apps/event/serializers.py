@@ -54,15 +54,30 @@ class EventApplicationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class EventImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventImage
+        fields = ['image']
+
+
 class EventSerializer(serializers.ModelSerializer):
 
     application_status = serializers.SerializerMethodField()
     host = HostSerializer()
     applications = EventApplicationSerializer(many=True)
+    images = EventImageSerializer(many=True)
 
     class Meta:
         model = Event
         fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        images = representation.pop('images')
+        representation['images'] = []
+        for image in images:
+            representation['images'].append(image.get(('image')))
+        return representation
 
     def get_application_status(self, obj):
         if self.context.get('show_application_status'):
@@ -86,3 +101,4 @@ class CreateUpdateEventSerializer(serializers.Serializer):
     description = serializers.CharField()
     location_url = serializers.URLField(allow_null=True)
     date = serializers.DateTimeField()
+    images = serializers.ListField(child=serializers.URLField(), required=False, allow_null=True)

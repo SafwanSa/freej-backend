@@ -37,3 +37,7 @@ def get_events_applications_by(resident_profile: ResidentProfile, event: Event,
     if not status:
         return resident_profile.events_applications.filter(is_deleted=False, event=event)
     return resident_profile.events_applications.filter(is_deleted=False, event=event, status=status.value)
+
+
+def get_event_images(event: Event) -> Iterable[EventImage]:
+    return event.images.filter(is_deleted=False)
