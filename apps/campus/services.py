@@ -104,3 +104,11 @@ class BuildingService:
             ResidentService.remove_supervisor(resident_profile=resident)
         if building.supervisor:
             ResidentService.make_supervisor(resident_profile=building.supervisor)
+
+    @staticmethod
+    def get_num_building_residents(building: Building) -> int:
+        return queries.get_all_building_residents(building=building).count()
+
+    @staticmethod
+    def get_num_building_rooms(building: Building) -> int:
+        return queries.get_building_rooms(building=building).count()
