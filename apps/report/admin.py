@@ -1,5 +1,6 @@
 from django.contrib import admin
 from core.admin import BaseAdmin
+from core.errors import APIError
 from .models import *
 from . import queries
 from core import utils
@@ -26,7 +27,10 @@ class ReportAdmin(BaseAdmin):
     list_filter = ['instance_type', 'created_at', 'is_checked']
 
     def get_instance(self, obj):
-        instance = queries.get_report_instance(report=obj)
+        try:
+            instance = queries.get_report_instance(report=obj)
+        except APIError:
+            instance = None
         return utils.linkify_instance(instance=instance)
     get_instance.short_description = 'Instance'
 
