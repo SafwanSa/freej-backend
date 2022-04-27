@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.utils.translation import gettext_lazy as _
 from core.errors import Error, APIError
 from . import queries
-from .permissions import ResidentProfileAccess
+from .permissions import ResidentProfileAccess, SupervisorAccess
 from .services import ResidentService, BuildingService
 
 
@@ -59,6 +59,18 @@ class FixBuildingIssuesView(APIView):
         issue = BuildingService.report_issue_with_fix(issue=issue, resident_profile=resident_profile)
         return Response(MaintenanceIssueSerializer(issue).data)
 
+
+class EditBuildingView(APIView):
+    permission_classes = [IsAuthenticated, SupervisorAccess]
+
+    def patch(self, request):
+        resident_profile = queries.get_resident_profile_by(user=request.user)
+        building = resident_profile.room.building
+        self.check_object_permissions(request=request, obj=building)
+        serializer = EditBuildingProfileSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        building = BuildingService.update_building(building=building, **serializer.validated_data)
+        return Response(BuildingSerializer(building).data)
 # ------------------------------------------ # Signup views # ------------------------------------------
 
 

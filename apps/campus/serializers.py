@@ -112,6 +112,11 @@ class EditProfileSerializer(serializers.Serializer):
     room_id = serializers.IntegerField(required=False, allow_null=True)
 
 
+class EditBuildingProfileSerializer(serializers.Serializer):
+    location_url = serializers.URLField(required=False, allow_null=True)
+    whatsApp_link = serializers.URLField(required=False, allow_null=True)
+
+
 class MaintenanceIssueSerializer(serializers.ModelSerializer):
     class Meta:
         model = MaintenanceIssue

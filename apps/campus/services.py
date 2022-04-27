@@ -117,3 +117,9 @@ class BuildingService:
     @staticmethod
     def get_num_building_rooms(building: Building) -> int:
         return queries.get_building_rooms(building=building).count()
+
+    @staticmethod
+    def update_building(building: Building, whatsApp_link: str = None, location_url: str = None) -> Building:
+        building.whatsApp_link = whatsApp_link
+        building.location_url = location_url
+        return building
