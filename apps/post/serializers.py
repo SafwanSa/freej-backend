@@ -81,7 +81,6 @@ class PostSerializer(serializers.ModelSerializer):
         representation['images'] = []
         for image in images:
             representation['images'].append(image.get(('image')))
-
         return representation
 
     def get_application_status(self, obj):

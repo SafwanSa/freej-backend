@@ -30,6 +30,11 @@ class Event(BaseModel):
         return f'{self.campus}-{self.name}'
 
 
+class EventImage(BaseModel):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='images')
+    image = models.URLField()
+
+
 class EventApplication(BaseModel):
     class ApplicationStatus(Enum):
         Joined = 'joined'
