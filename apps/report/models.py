@@ -11,6 +11,14 @@ class Report(BaseModel):
         Announcement = 'announcement'
         Event = 'event'
         Post = 'post'
+
+        @classmethod
+        def has_member_key(cls, key):
+            match = False
+            for value in cls:
+                if key.lower() == value.value.lower():
+                    match = True
+            return match
     reporter = models.ForeignKey(ResidentProfile, on_delete=models.CASCADE, related_name='reports')
     instance_type = models.CharField(max_length=50, choices=utils.create_choices_from_enum(InstanceType))
     instance_id = models.IntegerField()
