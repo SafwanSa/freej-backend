@@ -1,14 +1,13 @@
 from django.contrib import admin
 from .models import *
 from django.utils.translation import gettext_lazy as _
-import nested_admin
+from core.admin import BaseAdmin, BaseStackedInline, BaseTabularInline
 from core import utils
 
 
-class EventAdmin(nested_admin.NestedModelAdmin):
-    class EventApplicationInline(nested_admin.NestedTabularInline):
+class EventAdmin(BaseAdmin):
+    class EventApplicationInline(BaseTabularInline):
         model = EventApplication
-        extra = 0
         fields = ['resident_profile', 'status']
 
     model = Event
@@ -27,7 +26,7 @@ class EventAdmin(nested_admin.NestedModelAdmin):
     search_fields = ['host__user__username', 'campus__name_ar', 'campus__name_en']
 
 
-class EventApplicationAdmin(nested_admin.NestedModelAdmin):
+class EventApplicationAdmin(BaseAdmin):
     model = EventApplication
     list_display = [
         'id',

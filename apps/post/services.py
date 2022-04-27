@@ -70,8 +70,7 @@ class PostService:
             # Delete previous images
             old_images = queries.get_post_images(post=post)
             for img in old_images:
-                img.is_deleted = True
-                img.save()
+                img.delete()
 
             # Add new images
             for url in images:
@@ -87,8 +86,7 @@ class PostService:
         if post.owner != resident_profile:
             raise APIError(Error.NOT_OWNER)
 
-        post.is_deleted = True
-        post.save()
+        post.delete()
 
         # TODO: Reject/delete all its applications
         return post

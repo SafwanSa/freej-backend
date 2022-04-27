@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class SoftDeleteManager(models.Manager):
@@ -7,7 +8,7 @@ class SoftDeleteManager(models.Manager):
         super(SoftDeleteManager, self).__init__(*args, **kwargs)
 
     def _base_queryset(self):
-        return super().get_queryset().filter(deleted_at=None)
+        return super().get_queryset().all()
 
     def get_queryset(self):
         qs = self._base_queryset()
@@ -30,6 +31,7 @@ class BaseModel(models.Model):
 
     def delete(self):
         self.is_deleted = True
+        self.deleted_at = timezone.now()
         self.save()
 
     def restore(self):

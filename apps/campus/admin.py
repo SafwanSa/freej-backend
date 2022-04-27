@@ -1,15 +1,14 @@
 from django.contrib import admin
 from .models import *
 from django.utils.translation import gettext_lazy as _
-import nested_admin
+from core.admin import BaseAdmin, BaseStackedInline, BaseTabularInline
 from core import utils
 from . import queries
 
 
-class CampusAdmin(nested_admin.NestedModelAdmin):
-    class BuildingInline(nested_admin.NestedTabularInline):
+class CampusAdmin(BaseAdmin):
+    class BuildingInline(BaseTabularInline):
         model = Building
-        extra = 0
         fields = ['name', 'supervisor', 'whatsApp_link']
 
     model = Campus
@@ -24,10 +23,9 @@ class CampusAdmin(nested_admin.NestedModelAdmin):
     get_num_of_residents.short_description = 'Num. Residents'
 
 
-class BuildingAdmin(nested_admin.NestedModelAdmin):
-    class RoomInline(nested_admin.NestedTabularInline):
+class BuildingAdmin(BaseAdmin):
+    class RoomInline(BaseTabularInline):
         model = Room
-        extra = 0
         fields = ['name']
 
     model = Building
@@ -49,10 +47,9 @@ class BuildingAdmin(nested_admin.NestedModelAdmin):
     get_num_of_residents.short_description = 'Num. Residents'
 
 
-class RoomAdmin(nested_admin.NestedModelAdmin):
-    class ResidentInline(nested_admin.NestedTabularInline):
+class RoomAdmin(BaseAdmin):
+    class ResidentInline(BaseTabularInline):
         model = ResidentProfile
-        extra = 0
         fields = ['user', 'is_supervisor']
 
     model = Building
@@ -67,7 +64,7 @@ class RoomAdmin(nested_admin.NestedModelAdmin):
     get_num_of_residents.short_description = 'Num. Residents'
 
 
-class MaintenanceIssueAdmin(nested_admin.NestedModelAdmin):
+class MaintenanceIssueAdmin(BaseAdmin):
     model = MaintenanceIssue
     list_display = [
         'id',
@@ -82,7 +79,7 @@ class MaintenanceIssueAdmin(nested_admin.NestedModelAdmin):
     search_fields = ['building__name', 'building__campus__name_en', 'building__campus__name_ar']
 
 
-class ResidentProfileAdmin(nested_admin.NestedModelAdmin):
+class ResidentProfileAdmin(BaseAdmin):
     model = ResidentProfile
     list_display = [
         'id',

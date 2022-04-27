@@ -1,5 +1,5 @@
 from django.db import models
-from apps.utility.models import BaseModel
+from core.models import BaseModel
 from apps.account.models import User
 from apps.campus.models import Building, Campus
 from enum import Enum
