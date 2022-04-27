@@ -3,6 +3,7 @@ from .models import *
 from django.contrib.auth.models import Group
 from . import queries
 from core.validators import _PHONE_REGEX
+from .services import BuildingService
 
 
 class CampusSerializer(serializers.ModelSerializer):
@@ -66,10 +67,18 @@ class ResidentProfileSerializer(serializers.ModelSerializer):
                 return representation
 
         supervisor = SupervisorSerializer()
+        num_of_residents = serializers.SerializerMethodField()
+        num_of_rooms = serializers.SerializerMethodField()
 
         class Meta:
             model = Building
             exclude = ['campus']
+
+        def get_num_of_residents(self, obj):
+            return BuildingService.get_num_building_residents(building=obj)
+
+        def get_num_of_rooms(self, obj):
+            return BuildingService.get_num_building_rooms(building=obj)
 
     user = UserSerializer()
     campus_details = serializers.SerializerMethodField()
