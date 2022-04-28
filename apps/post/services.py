@@ -10,7 +10,7 @@ from apps.campus.models import ResidentProfile, Campus
 class PostService:
 
     @staticmethod
-    def rate_post(resident_profile: ResidentProfile, post: Post, rating: int) -> Post:
+    def rate_post(resident_profile: ResidentProfile, post: Post, rating: int, comment: str = None) -> Post:
 
         applications = queries.get_all_post_applications_by(
             post=post,
@@ -29,7 +29,7 @@ class PostService:
             post=post,
             reviewer=resident_profile,
             rating=rating,
-            comment=None
+            comment=comment
         )
         return new_review
 
