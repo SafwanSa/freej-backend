@@ -108,3 +108,4 @@ class UpdatePostSerializer(serializers.Serializer):
 
 class RateSerializer(serializers.Serializer):
     rating = serializers.IntegerField()
+    comment = serializers.CharField(required=False, allow_null=True)
