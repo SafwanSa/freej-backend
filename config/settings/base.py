@@ -249,4 +249,4 @@ SIMPLE_JWT = {
 CORS_URLS_REGEX = r"^/api/.*$"
 
 # Firebase
-FIREBASE_API_KEY = 'tttteo'
+FIREBASE_API_KEY = 'AAAA7MwqLb4:APA91bEU2fw4UPnPBShLV2vewa2ZqGfwGCvvsusQsHk_uk56WcI2byElYSdlOYOEgkhzhg6R-fv_8-fRbVvIdaDiUl9XT-yDJmEaQjFGoHsaT88Q3KN_q4q5LbWrmahyuQxWNuP2svHx'
