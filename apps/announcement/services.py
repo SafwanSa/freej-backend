@@ -28,10 +28,10 @@ class AnnouncementService:
             title=title,
             body=body,
             receivers=','.join([resident.user.username for resident in building_residents]),
-            data=json.loads({
-                'type': 'announcement',
+            data={
+                "type": "announcement",
                 "instance_id": new_announcement.id
-            })
+            }
         )
         return new_announcement
 

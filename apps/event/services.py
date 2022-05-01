@@ -18,7 +18,7 @@ class EventService:
             body=body,
             receivers=','.join([resident.user.username for resident in receivers]),
             data={
-                'type': 'event',
+                "type": "event",
                 "instance_id": event.id
             }
         )

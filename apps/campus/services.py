@@ -42,7 +42,7 @@ class ResidentService:
             type=NotificationType.Email,
             template='email/new_account.html',
             title='Welcome to freej',
-            receivers='s201766970@kfupm.edu.sa',
+            receivers=email,
             data=json.dumps({
                 "email": email
             })
