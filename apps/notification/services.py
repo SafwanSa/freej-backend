@@ -69,7 +69,8 @@ class NotificationService:
                 type=NotificationType.PushNotification.value,
                 title=title,
                 receivers=receivers,
-                body=body
+                body=body,
+                data=data
             )
             nf.result = NotificationService.send_push_notification(receivers=receivers, title=title, body=body)
             nf.save()

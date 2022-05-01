@@ -28,8 +28,12 @@ def get_event_applications_by_status(event: Event, status=Event.EventStatus) -> 
     return event.applications.filter(is_deleted=False, status=status)
 
 
-# def get_all_applied_events_of(resident_profile: ResidentProfile) -> Iterable[Event]:
-#     return resident_profile.events_applications.filter(is_deleted=False)
+def get_event_joiners(event: Event) -> Iterable[ResidentProfile]:
+    residents_ids = event.applications.filter(
+        is_deleted=False,
+        status=EventApplication.ApplicationStatus.Joined.value
+    ).values_list('resident_profile', flat=True)
+    return ResidentProfile.objects.filter(id__in=residents_ids)
 
 
 def get_events_applications_by(resident_profile: ResidentProfile, event: Event,
