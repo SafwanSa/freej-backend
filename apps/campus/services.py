@@ -1,3 +1,4 @@
+import json
 from django.utils import timezone
 from .models import *
 from core.errors import APIError, Error
@@ -37,7 +38,15 @@ class ResidentService:
             room=room,
             is_supervisor=False,
         )
-        # TODO: Send notification that account was created
+        NotificationService.send(
+            type=NotificationType.Email,
+            template='email/new_account.html',
+            title='Welcome to freej',
+            receivers='s201766970@kfupm.edu.sa',
+            data=json.dumps({
+                "email": email
+            })
+        )
         return new_resident_profile
 
     @staticmethod

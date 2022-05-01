@@ -1,16 +1,27 @@
-from django.utils import timezone
 from .models import *
 from core.errors import APIError, Error
 from . import queries
-from django.contrib.auth import password_validation
 from apps.notification.services import NotificationService, NotificationType
-from apps.account.models import GroupEnum, User
-from apps.account.services import AuthService, AccountService
-from django.contrib.auth.models import Group
 from apps.campus.models import ResidentProfile, Campus
+from apps.campus import queries as campusQueries
+from typing import Iterable
+import json
 
 
 class EventService:
+
+    @staticmethod
+    def send_push_notification(event: Event, receivers: Iterable[ResidentProfile], title: str, body: str) -> None:
+        NotificationService.send(
+            type=NotificationType.PushNotification,
+            title=title,
+            body=body,
+            receivers=','.join([resident.user.username for resident in receivers]),
+            data={
+                'type': 'event',
+                "instance_id": event.id
+            }
+        )
 
     @staticmethod
     def create_event(resident_profile: ResidentProfile, type: str, name: str,
@@ -32,7 +43,13 @@ class EventService:
                     event=new_event,
                     image=url
                 )
-        # TODO: Notify all residents of campus
+        campus_residents = campusQueries.get_all_campus_residents(campus=campus)
+        EventService.send_push_notification(
+            event=new_event,
+            receivers=campus_residents,
+            title=f'New event in {campus.name_en}',
+            body="Don't miss it!"
+        )
         return new_event
 
     @staticmethod
@@ -59,8 +76,13 @@ class EventService:
                     event=event,
                     image=url
                 )
-
-        # TODO: Notify all joiners
+        event_joiners = queries.get_event_joiners(event=event)
+        EventService.send_push_notification(
+            event=event,
+            receivers=event_joiners,
+            title=f'The event ({event.name}) has been changed',
+            body="Check it out"
+        )
         return event
 
     @staticmethod
@@ -68,7 +90,13 @@ class EventService:
         if resident_profile != event.host:
             raise APIError(Error.EVENT_HOST_ONLY)
         event.delete()
-        # TODO: Notify all joiners
+        event_joiners = queries.get_event_joiners(event=event)
+        EventService.send_push_notification(
+            event=event,
+            receivers=event_joiners,
+            title=f'The event ({event.name}) has been deleted :(',
+            body="Sorry for that"
+        )
         return event
 
     @staticmethod
