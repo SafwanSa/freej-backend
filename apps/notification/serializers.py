@@ -15,8 +15,8 @@ class NotificationSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         data = representation.pop('data')
         try:
-            data = json.loads(data)
             if data:
+                data = json.loads(data)
                 type = data.get('type')
                 instance_id = data.get('instance_id')
                 representation['type'] = type
