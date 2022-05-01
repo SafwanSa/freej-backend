@@ -1,11 +1,12 @@
+import json
 from django.utils import timezone
 from .models import *
 from core.errors import APIError, Error
 from . import queries
-from django.contrib.auth import password_validation
 from apps.notification.services import NotificationService, NotificationType
 from apps.account.models import GroupEnum, User
 from apps.campus.models import ResidentProfile, Building
+from apps.campus import queries as campusQueries
 from django.contrib.auth.models import Group
 
 
@@ -21,7 +22,17 @@ class AnnouncementService:
             title=title,
             body=body
         )
-        # TODO: Send FCM notifications to building's residents
+        building_residents = campusQueries.get_all_building_residents(building=building)
+        NotificationService.send(
+            type=NotificationType.PushNotification,
+            title=title,
+            body=body,
+            receivers=','.join([resident.user.username for resident in building_residents]),
+            data={
+                "type": "announcement",
+                "instance_id": new_announcement.id
+            }
+        )
         return new_announcement
 
     @staticmethod
