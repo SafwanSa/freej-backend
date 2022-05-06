@@ -11,10 +11,10 @@ def get_report_instance(report: Report) -> BaseModel:
     id = report.instance_id
     type = report.instance_type
     if type == Report.InstanceType.Announcement.value:
-        return announcementQueries.get_announcement_by_id(id=id)
+        return announcementQueries.get_announcement_by_id(id=id, with_deleted=True)
     elif type == Report.InstanceType.Post.value:
-        return postQueries.get_post_by_id(id=id)
+        return postQueries.get_post_by_id(id=id, with_deleted=True)
     elif type == Report.InstanceType.Event.value:
-        return eventQueries.get_event_by_id(id=id)
+        return eventQueries.get_event_by_id(id=id, with_deleted=True)
     else:
         raise ValueError()
