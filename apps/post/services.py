@@ -31,6 +31,13 @@ class PostService:
             rating=rating,
             comment=comment
         )
+
+        # Update resident profile
+        owner = post.owner
+        owner.num_of_raters += 1
+        owner.rating = (owner.rating + rating) / owner.num_of_raters
+        owner.save()
+
         return new_review
 
     @staticmethod

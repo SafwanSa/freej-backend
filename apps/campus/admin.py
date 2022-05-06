@@ -98,11 +98,13 @@ class ResidentProfileAdmin(BaseAdmin):
         utils.linkify_field('user'),
         'get_building',
         utils.linkify_field('room'),
+        'num_of_raters',
+        'rating',
         'is_supervisor',
         'created_at'
     ]
     readonly_fields = ['is_supervisor']
-    list_filter = ['room__building__campus', 'created_at']
+    list_filter = ['room__building__campus', 'num_of_raters', 'rating', 'created_at']
     search_fields = ['user__username', 'user__first_name', 'user__last_name', 'user__mobile_number']
 
     def get_building(self, obj):

@@ -13,7 +13,7 @@ class OwnerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ResidentProfile
-        fields = ['id', 'user']
+        fields = ['id', 'user', 'num_of_raters', 'rating']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
