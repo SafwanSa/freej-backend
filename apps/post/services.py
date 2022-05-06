@@ -83,12 +83,26 @@ class PostService:
 
     @staticmethod
     def delete_post(resident_profile: ResidentProfile, post: Post) -> Post:
+
         if post.owner != resident_profile:
             raise APIError(Error.NOT_OWNER)
 
-        post.delete()
+        applications = queries.get_all_post_applications_by(post=post)
+        found_non_deletable = False
+        for app in applications:
+            if app.status in [Application.ApplicationStatus.Accepted.value,
+                              Application.ApplicationStatus.Completed.value]:
+                found_non_deletable = True
 
-        # TODO: Reject/delete all its applications
+        if found_non_deletable:
+            raise APIError(Error.CANNOT_DELETE_POST)
+        else:
+            applications = applications.filter(status=Application.ApplicationStatus.Pending.value)
+            for app in applications:
+                app.status = Application.ApplicationStatus.Rejected.value
+                app.save()
+
+        post.delete()
         return post
 
     @staticmethod
