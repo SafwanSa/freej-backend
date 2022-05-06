@@ -13,9 +13,12 @@ def get_campus_events_by_status(campus: Campus, status: Event.EventStatus) -> It
     return campus.events.filter(is_deleted=False, status=status)
 
 
-def get_event_by_id(id: int) -> Event:
+def get_event_by_id(id: int, with_deleted=False) -> Event:
     try:
-        return Event.objects.get(id=id)
+        if with_deleted:
+            return Event.objects_with_deleted.get(id=id)
+        else:
+            return Event.objects.get(id=id)
     except Event.DoesNotExist:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[Event._meta.model_name])
 
