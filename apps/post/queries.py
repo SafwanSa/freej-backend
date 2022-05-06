@@ -73,3 +73,26 @@ def get_post_by_id(id: int, with_deleted=False) -> Post:
             return Post.objects.get(id=id)
     except Post.DoesNotExist:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[Post._meta.model_name])
+
+
+def get_post_active_beneficiaries(post: Post) -> Iterable[ResidentProfile]:
+    """
+    This function returns the resident profiles of beneficiaries that have pending, accepted, and completed applications
+    """
+    residents_ids = post.applications.filter(
+        is_deleted=False,
+        status__in=[
+            Application.ApplicationStatus.Accepted.value,
+            Application.ApplicationStatus.Completed.value,
+            Application.ApplicationStatus.Pending.value
+        ]
+    ).values_list('resident_profile', flat=True)
+    return ResidentProfile.objects.filter(id__in=residents_ids)
+
+
+def get_post_beneficiaries(post: Post) -> Iterable[ResidentProfile]:
+    """
+    This function returns the resident profiles of beneficiaries that have pending, accepted, and completed applications
+    """
+    residents_ids = post.applications.filter(is_deleted=False).values_list('resident_profile', flat=True)
+    return ResidentProfile.objects.filter(id__in=residents_ids)
