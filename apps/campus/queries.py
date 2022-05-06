@@ -9,12 +9,15 @@ from apps.event.models import Event
 
 
 def get_all_campuses() -> Iterable[Campus]:
-    return Campus.objects.filter(is_deleted=False)
+    return Campus.objects.filter(is_deleted=False).order_by('name_en')
 
 
-def get_campus_by_id(id: int) -> Campus:
+def get_campus_by_id(id: int, with_deleted=False) -> Campus:
     try:
-        return Campus.objects.get(id=id)
+        if with_deleted:
+            return Campus.objects_with_deleted.get(id=id)
+        else:
+            return Campus.objects.get(id=id)
     except Campus.DoesNotExist:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[Campus._meta.model_name])
 
@@ -24,12 +27,15 @@ def get_all_campus_residents(campus: Campus) -> Iterable[ResidentProfile]:
 
 
 def get_campus_buildings(campus: Campus) -> Iterable[Building]:
-    return campus.buildings.filter(is_deleted=False)
+    return campus.buildings.filter(is_deleted=False).order_by('name')
 
 
-def get_building_by_id(id: int) -> Building:
+def get_building_by_id(id: int, with_deleted=False) -> Building:
     try:
-        return Building.objects.get(id=id)
+        if with_deleted:
+            return Building.objects_with_deleted.get(id=id)
+        else:
+            return Building.objects.get(id=id)
     except Building.DoesNotExist:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[Building._meta.model_name])
 
@@ -39,12 +45,15 @@ def get_all_building_residents(building: Building) -> Iterable[ResidentProfile]:
 
 
 def get_building_rooms(building: Building) -> Iterable[Room]:
-    return building.rooms.filter(is_deleted=False)
+    return building.rooms.filter(is_deleted=False).order_by('name')
 
 
-def get_room_by_id(id: int) -> Room:
+def get_room_by_id(id: int, with_deleted=False) -> Room:
     try:
-        return Room.objects.get(id=id)
+        if with_deleted:
+            return Room.objects_with_deleted.get(id=id)
+        else:
+            return Room.objects.get(id=id)
     except Room.DoesNotExist:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[Room._meta.model_name])
 
@@ -60,9 +69,12 @@ def get_room_residents(room: Room) -> Iterable[ResidentProfile]:
     return room.residents.filter(is_deleted=False)
 
 
-def get_issue_by_id(id: int) -> MaintenanceIssue:
+def get_issue_by_id(id: int, with_deleted=False) -> MaintenanceIssue:
     try:
-        return MaintenanceIssue.objects.get(id=id)
+        if with_deleted:
+            return MaintenanceIssue.objects_with_deleted.get(id=id)
+        else:
+            return MaintenanceIssue.objects.get(id=id)
     except MaintenanceIssue.DoesNotExist:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[MaintenanceIssue._meta.model_name])
 

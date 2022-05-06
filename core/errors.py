@@ -38,6 +38,9 @@ class Error(Enum):
     MUST_HAVE_COMPLETED_APP = {'code': -916, 'detail': _("You must have a completed application to rate this post!")}
     SUPERVISOR_CANNOT_CHANGE_ROOM = {'code': -911,
                                      'detail': _("Building supervisors cannot change building. Please contact us!")}
+    CANNOT_DELETE_POST = {
+        'code': -654,
+        'detail': _("You cannot delete a post that has accepted or completed applications!")}
 
 
 class APIError(Exception):

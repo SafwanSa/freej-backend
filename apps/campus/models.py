@@ -16,7 +16,7 @@ class Campus(BaseModel):
             'uploads/campuses/images/{}'.format(time.strftime("%Y/%m/%d"))),
         max_length=2048,
         blank=True, null=True
-    )
+    )  # TODO: Remove blank and null
 
     def __str__(self) -> str:
         return self.name_en
@@ -51,6 +51,8 @@ class ResidentProfile(BaseModel):
     photo = models.URLField(null=True, blank=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='residents')
     is_supervisor = models.BooleanField(default=False)
+    rating = models.FloatField(default=0)
+    num_of_raters = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return f'{self.user.username}'

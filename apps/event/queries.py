@@ -6,26 +6,29 @@ from apps.campus.models import ResidentProfile
 
 
 def get_all_campus_events(campus: Campus) -> Iterable[Event]:
-    return campus.events.filter(is_deleted=False)
+    return campus.events.filter(is_deleted=False).order_by('-created_at')
 
 
 def get_campus_events_by_status(campus: Campus, status: Event.EventStatus) -> Iterable[Event]:
-    return campus.events.filter(is_deleted=False, status=status)
+    return campus.events.filter(is_deleted=False, status=status).order_by('-created_at')
 
 
-def get_event_by_id(id: int) -> Event:
+def get_event_by_id(id: int, with_deleted=False) -> Event:
     try:
-        return Event.objects.get(id=id)
+        if with_deleted:
+            return Event.objects_with_deleted.get(id=id)
+        else:
+            return Event.objects.get(id=id)
     except Event.DoesNotExist:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[Event._meta.model_name])
 
 
 def get_all_event_applications(event: Event) -> Iterable[EventApplication]:
-    return event.applications.filter(is_deleted=False)
+    return event.applications.filter(is_deleted=False).order_by('-created_at')
 
 
 def get_event_applications_by_status(event: Event, status=Event.EventStatus) -> Iterable[EventApplication]:
-    return event.applications.filter(is_deleted=False, status=status)
+    return event.applications.filter(is_deleted=False, status=status).order_by('-created_at')
 
 
 def get_event_joiners(event: Event) -> Iterable[ResidentProfile]:
@@ -39,8 +42,9 @@ def get_event_joiners(event: Event) -> Iterable[ResidentProfile]:
 def get_events_applications_by(resident_profile: ResidentProfile, event: Event,
                                status: EventApplication.ApplicationStatus = None) -> Iterable[Event]:
     if not status:
-        return resident_profile.events_applications.filter(is_deleted=False, event=event)
-    return resident_profile.events_applications.filter(is_deleted=False, event=event, status=status.value)
+        return resident_profile.events_applications.filter(is_deleted=False, event=event).order_by('-created_at')
+    return resident_profile.events_applications.filter(
+        is_deleted=False, event=event, status=status.value).order_by('-created_at')
 
 
 def get_event_images(event: Event) -> Iterable[EventImage]:
