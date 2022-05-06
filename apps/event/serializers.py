@@ -15,7 +15,7 @@ class HostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ResidentProfile
-        fields = ['id', 'user']
+        fields = ['id', 'user', 'rating', 'num_of_raters']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

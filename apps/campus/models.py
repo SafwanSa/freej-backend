@@ -51,6 +51,8 @@ class ResidentProfile(BaseModel):
     photo = models.URLField(null=True, blank=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='residents')
     is_supervisor = models.BooleanField(default=False)
+    rating = models.FloatField(default=0)
+    num_of_raters = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return f'{self.user.username}'
