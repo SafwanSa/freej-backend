@@ -16,7 +16,7 @@ class NotificationSerializer(serializers.ModelSerializer):
         data = representation.pop('data')
         try:
             if data:
-                data.replace("'", '"')
+                data = data.replace("'", '"')
                 data = json.loads(data)
                 type = data.get('type')
                 instance_id = data.get('instance_id')
