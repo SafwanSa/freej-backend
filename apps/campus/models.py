@@ -16,7 +16,7 @@ class Campus(BaseModel):
             'uploads/campuses/images/{}'.format(time.strftime("%Y/%m/%d"))),
         max_length=2048,
         blank=True, null=True
-    )
+    )  # TODO: Remove blank and null
 
     def __str__(self) -> str:
         return self.name_en
