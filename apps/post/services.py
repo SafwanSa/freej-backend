@@ -51,6 +51,13 @@ class PostService:
         owner.num_of_raters += 1
         owner.rating = (owner.rating + rating) / owner.num_of_raters
         owner.save()
+        # Send notification to the owner
+        PostService.send_push_notification(
+            post=post,
+            receivers=[post.owner],
+            title='You have been rated',
+            body='{} has rated you for your {} ({})'.format(resident_profile.user.first_name, post.type, post.title),
+        )
 
         return new_review
 
