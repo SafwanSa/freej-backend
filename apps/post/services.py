@@ -1,3 +1,4 @@
+from typing import Iterable
 from django.utils import timezone
 from .models import *
 from core.errors import APIError, Error
@@ -8,6 +9,19 @@ from apps.campus.models import ResidentProfile, Campus
 
 
 class PostService:
+
+    @staticmethod
+    def send_push_notification(post: Post, receivers: Iterable[ResidentProfile], title: str, body: str) -> None:
+        NotificationService.send(
+            type=NotificationType.PushNotification,
+            title=title,
+            body=body,
+            receivers=','.join([resident.user.username for resident in receivers]),
+            data={
+                "type": "post",
+                "instance_id": post.id
+            }
+        )
 
     @staticmethod
     def rate_post(resident_profile: ResidentProfile, post: Post, rating: int, comment: str = None) -> Post:
@@ -85,6 +99,14 @@ class PostService:
                     post=post,
                     image=url
                 )
+        # Send notifications to all applicants
+        beneficiaries = queries.get_post_active_beneficiaries(post=post)
+        PostService.send_push_notification(
+            post=post,
+            receivers=beneficiaries,
+            title='Applied {} ({}) is updated'.format(post.type, post.title),
+            body='The {} you applied for has been updated'.format(post.type),
+        )
         post.save()
         return post
 
@@ -109,6 +131,14 @@ class PostService:
                 app.status = Application.ApplicationStatus.Rejected.value
                 app.save()
 
+        # Send notifications to all applicants
+        beneficiaries = queries.get_post_beneficiaries(post=post)
+        PostService.send_push_notification(
+            post=post,
+            receivers=beneficiaries,
+            title='Applied {} ({}) is deleted'.format(post.type, post.title),
+            body='The {} you applied for has been deleted'.format(post.type),
+        )
         post.delete()
         return post
 
@@ -133,6 +163,13 @@ class PostService:
             status=Application.ApplicationStatus.Pending.value,
             description=description
         )
+        # Send notifications to owner
+        PostService.send_push_notification(
+            post=post,
+            receivers=[post.owner],
+            title='New applications for your {} ({})'.format(post.type, post.title),
+            body='{} has applied to your {} ({})'.format(resident_profile.user.first_name, post.type, post.title),
+        )
         return application
 
     @staticmethod
@@ -151,6 +188,23 @@ class PostService:
 
         application.status = Application.ApplicationStatus.Cancelled.value
         application.save()
+        # Send notifications to applicant or owner
+        if application.post.owner == resident_profile:
+            PostService.send_push_notification(
+                post=application.post,
+                receivers=[application.beneficiary],
+                title='Application has been cancelled',
+                body='Your application to the {} ({}) has been cancelled'.format(
+                    application.post.type, application.post.title),
+            )
+        else:
+            PostService.send_push_notification(
+                post=application.post,
+                receivers=[application.post.owner],
+                title='Application has been cancelled',
+                body='An application for your {} ({}) has been cancelled by beneficiary'.format(
+                    application.post.type, application.post.title),
+            )
         return application
 
     @staticmethod
@@ -178,6 +232,14 @@ class PostService:
             for app in other_applications:
                 app.status = Application.ApplicationStatus.Rejected.value
                 app.save()
+        # Send notifications to applicant
+        PostService.send_push_notification(
+            post=application.post,
+            receivers=[application.beneficiary],
+            title='Application has been accepted',
+            body='Your application to the {} ({}) has been accepted, contact the owner'.format(
+                application.post.type, application.post.title),
+        )
         return application
 
     @staticmethod
@@ -196,7 +258,13 @@ class PostService:
         # Reject the application
         application.status = Application.ApplicationStatus.Rejected.value
         application.save()
-
+        PostService.send_push_notification(
+            post=application.post,
+            receivers=[application.beneficiary],
+            title='Application has been rejected',
+            body='Your application to the {} ({}) has been rejected'.format(
+                application.post.type, application.post.title),
+        )
         return application
 
     @staticmethod
@@ -220,6 +288,14 @@ class PostService:
         post = application.post
         post.is_active = False
         post.save()
+        # Send notifications to applicant
+        PostService.send_push_notification(
+            post=application.post,
+            receivers=[application.beneficiary],
+            title='Application has been completed',
+            body='Your application to the {} ({}) is completed'.format(
+                application.post.type, application.post.title),
+        )
         return application
 
     @staticmethod
