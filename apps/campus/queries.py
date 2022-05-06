@@ -9,7 +9,7 @@ from apps.event.models import Event
 
 
 def get_all_campuses() -> Iterable[Campus]:
-    return Campus.objects.filter(is_deleted=False)
+    return Campus.objects.filter(is_deleted=False).order_by('name_en')
 
 
 def get_campus_by_id(id: int, with_deleted=False) -> Campus:
@@ -27,7 +27,7 @@ def get_all_campus_residents(campus: Campus) -> Iterable[ResidentProfile]:
 
 
 def get_campus_buildings(campus: Campus) -> Iterable[Building]:
-    return campus.buildings.filter(is_deleted=False)
+    return campus.buildings.filter(is_deleted=False).order_by('name')
 
 
 def get_building_by_id(id: int, with_deleted=False) -> Building:
@@ -45,7 +45,7 @@ def get_all_building_residents(building: Building) -> Iterable[ResidentProfile]:
 
 
 def get_building_rooms(building: Building) -> Iterable[Room]:
-    return building.rooms.filter(is_deleted=False)
+    return building.rooms.filter(is_deleted=False).order_by('name')
 
 
 def get_room_by_id(id: int, with_deleted=False) -> Room:
