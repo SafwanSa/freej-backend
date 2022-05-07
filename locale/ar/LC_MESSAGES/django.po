@@ -182,7 +182,7 @@ msgstr "الأحرف والأرقام الخاصة مسموح بها الآن"
 
 #: core/validators.py:11
 msgid "Mobile number must be 10 digits starting with '05'"
-msgstr "يجب أن يتكون رقم الهاتف المحمول من 10 أرقام تبدأ بـ "05""
+msgstr "يجب أن يتكون رقم الهاتف المحمول من 10 أرقام تبدأ بـ'05'"
 
 #: core/validators.py:15
 msgid "Username is a student id. (e.g. s201477960 or t201022347)"
