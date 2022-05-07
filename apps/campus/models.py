@@ -14,9 +14,8 @@ class Campus(BaseModel):
     image = models.FileField(
         upload_to=utils.PathAndRename(
             'uploads/campuses/images/{}'.format(time.strftime("%Y/%m/%d"))),
-        max_length=2048,
-        blank=True, null=True
-    )  # TODO: Remove blank and null
+        max_length=2048
+    )
 
     def __str__(self) -> str:
         return self.name_en
