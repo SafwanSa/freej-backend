@@ -86,7 +86,7 @@ def get_post_active_beneficiaries(post: Post) -> Iterable[ResidentProfile]:
             Application.ApplicationStatus.Completed.value,
             Application.ApplicationStatus.Pending.value
         ]
-    ).values_list('resident_profile', flat=True)
+    ).values_list('beneficiary', flat=True)
     return ResidentProfile.objects.filter(id__in=residents_ids)
 
 
@@ -94,5 +94,5 @@ def get_post_beneficiaries(post: Post) -> Iterable[ResidentProfile]:
     """
     This function returns the resident profiles of beneficiaries that have pending, accepted, and completed applications
     """
-    residents_ids = post.applications.filter(is_deleted=False).values_list('resident_profile', flat=True)
+    residents_ids = post.applications.filter(is_deleted=False).values_list('beneficiary', flat=True)
     return ResidentProfile.objects.filter(id__in=residents_ids)

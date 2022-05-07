@@ -19,6 +19,7 @@ def error_log_middleware(get_response):
                     data = None
             msg = {
                 'user': request.user.username,
+                'method': request.method,
                 'resource': request.path,
                 'response': data
             }
