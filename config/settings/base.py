@@ -117,6 +117,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middlewares.error_log_middleware',
     # "django.middleware.common.BrokenLinkEmailsMiddleware",
 ]
 

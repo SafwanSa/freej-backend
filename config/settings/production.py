@@ -113,13 +113,13 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
-# logger_session = Session(
-#     aws_access_key_id=AWS_ACCESS_KEY_ID,
-#     aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-#     region_name=AWS_S3_REGION_NAME,
-# )
-# LOG_GROUP = "freej-backend-dev-log"
-# STREAM_NAME_INFO = "info.log"
+logger_session = Session(
+    aws_access_key_id=AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    region_name=AWS_S3_REGION_NAME,
+)
+LOG_GROUP = "freej-backend-prod-log"
+STREAM_NAME_INFO = "info.log"
 
 LOGGING = {
     "version": 1,
@@ -142,14 +142,14 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "verbose",
         },
-        # "info_handler": {
-        #     "level": "INFO",
-        #     "class": "watchtower.CloudWatchLogHandler",
-        #     "boto3_session": logger_session,
-        #     "log_group": LOG_GROUP,
-        #     "stream_name": STREAM_NAME_INFO,
-        #     "formatter": "verbose",
-        # },
+        "info_handler": {
+            "level": "INFO",
+            "class": "watchtower.CloudWatchLogHandler",
+            "boto3_session": logger_session,
+            "log_group": LOG_GROUP,
+            "stream_name": STREAM_NAME_INFO,
+            "formatter": "verbose",
+        },
     },
     "root": {"level": "INFO", "handlers": ["console"]},
     "loggers": {
@@ -168,10 +168,10 @@ LOGGING = {
             "handlers": ["console"],
             "propagate": True,
         },
-        # "django": {
-        #     "level": "INFO",
-        #     "handlers": ["info_handler"],
-        #     "propagate": True,
-        # },
+        "django": {
+            "level": "INFO",
+            "handlers": ["info_handler"],
+            "propagate": True,
+        },
     },
 }
