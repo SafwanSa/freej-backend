@@ -52,6 +52,11 @@ class BuildingAdmin(DjangoObjectActions, BaseAdmin):
         return count
     get_num_of_residents.short_description = 'Num. Residents'
 
+    def render_change_form(self, request, context, *args, **kwargs):
+        form = context['adminform'].form
+        form.fields['supervisor'].queryset = queries.get_all_building_residents(building=form.instance)
+        return super().render_change_form(request, context, *args, **kwargs)
+
     def update_supervisor(modeladmin, request, queryset):
         BuildingService.update_supervisor(queryset)
 
