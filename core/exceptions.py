@@ -60,10 +60,15 @@ def custom_exception_handler(exc, ctx):
     if isinstance(exc, SerializerValidationError):
         code = -400
         messages = []
+        password_error = False
         try:
+            if isinstance(exc.detail, list):
+                password_error = True
+
             for key, value in exc.detail.items():
                 d = value[0]
                 if isinstance(d, dict):
+                    # TODO: This might cause an error if the Errors were generated from the nested serializers' fields
                     message = str(f'{value}:')
                     for (key2, value2) in enumerate(d):
                         message += str(f'{value2}:{d[value2][0]}')
@@ -81,6 +86,9 @@ def custom_exception_handler(exc, ctx):
         except BaseException:
             code = -403
             messages = [exc.detail]
+            if password_error:
+                code = -400
+                messages = exc.detail
         return return_error_response(code=code, messages=messages)
     else:
         code = exc.status_code
