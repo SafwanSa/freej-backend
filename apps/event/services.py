@@ -12,16 +12,17 @@ class EventService:
 
     @staticmethod
     def send_push_notification(event: Event, receivers: Iterable[ResidentProfile], title: str, body: str) -> None:
-        NotificationService.send(
-            type=NotificationType.PushNotification,
-            title=title,
-            body=body,
-            receivers=','.join([resident.user.username for resident in receivers]),
-            data={
-                "type": "event",
-                "instance_id": event.id
-            }
-        )
+        if receivers.count() != 0:
+            NotificationService.send(
+                type=NotificationType.PushNotification,
+                title=title,
+                body=body,
+                receivers=','.join([resident.user.username for resident in receivers]),
+                data={
+                    "type": "event",
+                    "instance_id": event.id
+                }
+            )
 
     @staticmethod
     def create_event(resident_profile: ResidentProfile, type: str, name: str,

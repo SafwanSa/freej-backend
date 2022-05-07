@@ -12,16 +12,17 @@ class PostService:
 
     @staticmethod
     def send_push_notification(post: Post, receivers: Iterable[ResidentProfile], title: str, body: str) -> None:
-        NotificationService.send(
-            type=NotificationType.PushNotification,
-            title=title,
-            body=body,
-            receivers=','.join([resident.user.username for resident in receivers]),
-            data={
-                "type": "post",
-                "instance_id": post.id
-            }
-        )
+        if receivers.count() != 0:
+            NotificationService.send(
+                type=NotificationType.PushNotification,
+                title=title,
+                body=body,
+                receivers=','.join([resident.user.username for resident in receivers]),
+                data={
+                    "type": "post",
+                    "instance_id": post.id
+                }
+            )
 
     @staticmethod
     def rate_post(resident_profile: ResidentProfile, post: Post, rating: int, comment: str = None) -> Post:

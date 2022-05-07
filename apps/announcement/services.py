@@ -16,16 +16,17 @@ class AnnouncementService:
     @staticmethod
     def send_push_notification(announcement: Announcement,
                                receivers: Iterable[ResidentProfile], title: str, body: str) -> None:
-        NotificationService.send(
-            type=NotificationType.PushNotification,
-            title=title,
-            body=body,
-            receivers=','.join([resident.user.username for resident in receivers]),
-            data={
-                "type": "announcement",
-                "instance_id": announcement.id
-            }
-        )
+        if receivers.count() != 0:
+            NotificationService.send(
+                type=NotificationType.PushNotification,
+                title=title,
+                body=body,
+                receivers=','.join([resident.user.username for resident in receivers]),
+                data={
+                    "type": "announcement",
+                    "instance_id": announcement.id
+                }
+            )
 
     @staticmethod
     def send_building_announcement(resident_profile: ResidentProfile, building: Building,
