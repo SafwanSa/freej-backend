@@ -67,18 +67,23 @@ class ResidentProfileSerializer(serializers.ModelSerializer):
                 return representation
 
         supervisor = SupervisorSerializer()
-        num_of_residents = serializers.SerializerMethodField()
-        num_of_rooms = serializers.SerializerMethodField()
+        statistics = serializers.SerializerMethodField()
 
         class Meta:
             model = Building
             exclude = ['campus']
 
-        def get_num_of_residents(self, obj):
-            return BuildingService.get_num_building_residents(building=obj)
-
-        def get_num_of_rooms(self, obj):
-            return BuildingService.get_num_building_rooms(building=obj)
+        def get_statistics(self, obj):
+            data = {
+                'num_of_residents': BuildingService.get_num_building_residents(building=obj, with_blocked=False),
+                'num_of_blocked_residents': BuildingService.get_num_building_residents(building=obj, with_blocked=True),
+                'num_of_posts': BuildingService.get_num_of_posts_by_building(building=obj),
+                'num_of_issues': BuildingService.get_num_of_building_issues(building=obj),
+                'num_of_events': BuildingService.get_num_of_building_events(building=obj),
+                'num_of_building_announcements': BuildingService.get_num_of_building_announcements(building=obj),
+                'num_of_transactions': BuildingService.get_num_of_building_applications(building=obj),
+            }
+            return data
 
     user = UserSerializer()
     campus_details = serializers.SerializerMethodField()

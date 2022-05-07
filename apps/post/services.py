@@ -5,7 +5,7 @@ from core.errors import APIError, Error
 from . import queries
 from apps.notification.services import NotificationService, NotificationType
 from apps.account.models import GroupEnum, User
-from apps.campus.models import ResidentProfile, Campus
+from apps.campus.models import ResidentProfile
 
 
 class PostService:

@@ -2,7 +2,7 @@ from .models import *
 from django.db.models import Q
 from typing import Iterable
 from core.errors import Error, APIError
-from apps.campus.models import Campus
+from apps.campus.models import Building, Campus
 
 
 def get_all_campus_posts(campus: Campus) -> Iterable[Post]:
@@ -96,3 +96,11 @@ def get_post_beneficiaries(post: Post) -> Iterable[ResidentProfile]:
     """
     residents_ids = post.applications.filter(is_deleted=False).values_list('beneficiary', flat=True)
     return ResidentProfile.objects.filter(id__in=residents_ids)
+
+
+def get_posts_by_building(building=Building) -> Iterable[Post]:
+    return Post.objects.filter(owner__room__building=building)
+
+
+def get_applications_by_building(building=Building) -> Iterable[Application]:
+    return Application.objects.filter(beneficiary__room__building=building)

@@ -2,7 +2,7 @@ from .models import *
 from django.db.models import Q
 from typing import Iterable
 from core.errors import Error, APIError
-from apps.campus.models import ResidentProfile
+from apps.campus.models import Building, ResidentProfile
 
 
 def get_all_campus_events(campus: Campus) -> Iterable[Event]:
@@ -49,3 +49,7 @@ def get_events_applications_by(resident_profile: ResidentProfile, event: Event,
 
 def get_event_images(event: Event) -> Iterable[EventImage]:
     return event.images.filter(is_deleted=False)
+
+
+def get_events_by_building(building=Building) -> int:
+    return Event.objects.filter(host__room__building=building)

@@ -61,7 +61,7 @@ class MaintenanceIssue(BaseModel):
     class MaintenanceIssueType(Enum):
         Halls = 'halls'
         Rooms = 'rooms'
-        Bathrooms = 'bathroom'
+        Bathrooms = 'bathrooms'
         Other = 'other'
 
     class MaintenanceIssueStatus(Enum):

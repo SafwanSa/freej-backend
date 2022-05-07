@@ -9,6 +9,9 @@ from apps.notification.services import NotificationService, NotificationType
 from apps.account.models import GroupEnum, User
 from apps.account.services import AuthService, AccountService
 from django.contrib.auth.models import Group
+from apps.post import queries as postQueries
+from apps.event import queries as eventQueries
+from apps.announcement import queries as announcementQueries
 
 
 class ResidentService:
@@ -149,8 +152,8 @@ class BuildingService:
             ResidentService.make_supervisor(resident_profile=building.supervisor)
 
     @staticmethod
-    def get_num_building_residents(building: Building) -> int:
-        return queries.get_all_building_residents(building=building).count()
+    def get_num_building_residents(building: Building, with_blocked: bool) -> int:
+        return queries.get_all_building_residents(building=building).filter(user__is_blocked=with_blocked).count()
 
     @staticmethod
     def get_num_building_rooms(building: Building) -> int:
@@ -162,3 +165,23 @@ class BuildingService:
         building.location_url = location_url
         building.save()
         return building
+
+    @staticmethod
+    def get_num_of_posts_by_building(building=Building) -> int:
+        return postQueries.get_posts_by_building(building=building).count()
+
+    @staticmethod
+    def get_num_of_building_issues(building=Building) -> int:
+        return queries.get_building_issues(building=building).count()
+
+    @staticmethod
+    def get_num_of_building_events(building=Building) -> int:
+        return eventQueries.get_events_by_building(building=building).count()
+
+    @staticmethod
+    def get_num_of_building_announcements(building=Building) -> int:
+        return announcementQueries.get_building_announcements(building=building).count()
+
+    @staticmethod
+    def get_num_of_building_applications(building=Building) -> int:
+        return postQueries.get_applications_by_building(building=building).count()
