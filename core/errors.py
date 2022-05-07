@@ -41,6 +41,7 @@ class Error(Enum):
     CANNOT_DELETE_POST = {
         'code': -654,
         'detail': _("You cannot delete a post that has accepted or completed applications!")}
+    HOST_IS_JOINER = {'code': -554, 'detail': _("The host is already a joiner!")}
 
 
 class APIError(Exception):

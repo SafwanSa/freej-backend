@@ -38,7 +38,7 @@ class AnnouncementService:
             title=title,
             body=body
         )
-        building_residents = campusQueries.get_all_building_residents(building=building)
+        building_residents = campusQueries.get_all_building_residents(building=building).exclude(resident_profile)
         AnnouncementService.send_push_notification(
             announcement=new_announcement,
             receivers=building_residents,

@@ -16,11 +16,24 @@ class AnnouncementAdmin(BaseAdmin):
     search_fields = ['sender__username', 'title']
 
 
-class BuildingAnnouncementAdmin(BaseAdmin):
+class BuildingAnnouncementAdmin(DjangoObjectActions, BaseAdmin):
     model = BuildingAnnouncement
     list_display = ['id', utils.linkify_field('sender'), utils.linkify_field('building'), 'title', 'created_at']
     list_filter = ['building', 'created_at']
     search_fields = ['sender__username', 'title']
+    autocomplete_fields = ['building']
+
+    def notify_residents(modeladmin, request, instance):
+        instance.save()
+        building_residents = campusQueries.get_all_building_residents(building=instance.building)
+        AnnouncementService.send_push_notification(
+            announcement=instance,
+            title=instance.title,
+            body=instance.body,
+            receivers=building_residents
+        )
+
+    change_actions = ('notify_residents',)
 
 
 class CampusAnnouncementAdmin(DjangoObjectActions, BaseAdmin):
@@ -28,6 +41,7 @@ class CampusAnnouncementAdmin(DjangoObjectActions, BaseAdmin):
     list_display = ['id', utils.linkify_field('sender'), utils.linkify_field('campus'), 'title', 'created_at']
     list_filter = ['campus', 'created_at']
     search_fields = ['sender__username', 'title']
+    autocomplete_fields = ['campus']
 
     def notify_residents(modeladmin, request, instance):
         instance.save()

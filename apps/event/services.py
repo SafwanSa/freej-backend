@@ -44,7 +44,7 @@ class EventService:
                     event=new_event,
                     image=url
                 )
-        campus_residents = campusQueries.get_all_campus_residents(campus=campus)
+        campus_residents = campusQueries.get_all_campus_residents(campus=campus).exclude(id=resident_profile.id)
         EventService.send_push_notification(
             event=new_event,
             receivers=campus_residents,
@@ -102,6 +102,10 @@ class EventService:
 
     @staticmethod
     def join_event(resident_profile: ResidentProfile, event: Event) -> EventApplication:
+
+        if resident_profile == event.host:
+            raise APIError(Error.HOST_IS_JOINER)
+
         # Check if the resident has an application he cancelled
         application = queries.get_events_applications_by(
             resident_profile=resident_profile,
