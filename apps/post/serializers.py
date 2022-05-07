@@ -10,16 +10,26 @@ class OwnerSerializer(serializers.ModelSerializer):
             fields = ['first_name', 'last_name', 'mobile_number']
 
     user = OwnerUserSerializer()
+    resident_details = serializers.SerializerMethodField()
 
     class Meta:
         model = ResidentProfile
-        fields = ['id', 'user', 'num_of_raters', 'rating']
+        fields = ['id', 'user', 'num_of_raters', 'rating', 'resident_details']
+
+    def get_resident_details(self, obj):
+        room = obj.room
+        details = {
+            'room_name': room.name,
+            'building_name': room.building.name
+        }
+        return details
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         for key, value in representation.pop('user').items():
             representation[key] = value
-        # representation = representation['user']
+        for key, value in representation.pop('resident_details').items():
+            representation[key] = value
         return representation
 
 
@@ -42,16 +52,26 @@ class BeneficiarySerializer(serializers.ModelSerializer):
             fields = ['first_name', 'last_name', 'mobile_number']
 
     user = BeneficiaryUserSerializer()
+    resident_details = serializers.SerializerMethodField()
 
     class Meta:
         model = ResidentProfile
-        fields = ['id', 'user']
+        fields = ['id', 'user', 'resident_details']
+
+    def get_resident_details(self, obj):
+        room = obj.room
+        details = {
+            'room_name': room.name,
+            'building_name': room.building.name
+        }
+        return details
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         for key, value in representation.pop('user').items():
             representation[key] = value
-        # representation = representation['user']
+        for key, value in representation.pop('resident_details').items():
+            representation[key] = value
         return representation
 
 
