@@ -1,0 +1,189 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-05-07 14:13+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: apps/account/permissions.py:7
+msgid "You don't have access to this account"
+msgstr "ليس لديك حق الوصول إلى هذا الحساب"
+
+#: apps/account/permissions.py:12 apps/campus/permissions.py:13
+#: apps/campus/permissions.py:32 core/errors.py:17
+msgid "User is banned!"
+msgstr "محظور المستخدم"
+
+#: apps/account/views.py:24 apps/account/views.py:59
+msgid "OTP is sent. You can request a new one after {} seconds"
+msgstr "تم إرسال OTP. يمكنك طلب واحدة جديدة بعد {} ثانية"
+
+#: apps/account/views.py:70
+msgid "OTP is valid"
+msgstr "الرمز صالح"
+
+#: apps/account/views.py:79
+msgid "Password changed successfully"
+msgstr "تم تغيير الرقم السري بنجاح"
+
+#: apps/campus/permissions.py:8
+msgid "User has no resident profile or role."
+msgstr "المستخدم ليس لديه حساب او صلاحية مقيم"
+
+#: apps/campus/permissions.py:27
+msgid "User has no supervisor role or the supervisor permission is disabled."
+msgstr "ليس للمستخدم دور مشرف أو تم تعطيل إذن المشرف"
+
+#: config/settings/base.py:41
+msgid "Arabic"
+msgstr "عربي"
+
+#: config/settings/base.py:42
+msgid "English"
+msgstr "إنجليزي"
+
+#: core/errors.py:8
+msgid "Oops!. Something went wrong, please contact us"
+msgstr "أُووبس!. حدث خطأ ما، يرجى الاتصال بنا"
+
+#: core/errors.py:9
+msgid "Default: {}"
+msgstr "تقصير: {}"
+
+#: core/errors.py:10
+msgid "{} not found!"
+msgstr "{} لا يوجد"
+
+#: core/errors.py:11
+msgid "Invalid token!"
+msgstr "رمز غير صالح"
+
+#: core/errors.py:12
+msgid "This field is required!"
+msgstr "هذه الخانة مطلوبه"
+
+#: core/errors.py:13
+msgid "Data is missing!"
+msgstr "البيانات مفقودة"
+
+#: core/errors.py:14
+msgid "Invalid token or otp!"
+msgstr "رمز غير صالح"
+
+#: core/errors.py:15
+msgid "Your token has expired!"
+msgstr "انتهت صلاحية الجلسة"
+
+#: core/errors.py:16
+msgid "No active account found with the given credentials!"
+msgstr "لم يتم العثور على حساب نشط ببيانات الاعتماد المقدمة"
+
+#: core/errors.py:19
+msgid "OTP is invalid!"
+msgstr "رمز غير صالح"
+
+#: core/errors.py:20
+msgid "Provided language is unsupported!"
+msgstr "اللغة المقدمة غير مدعومة"
+
+#: core/errors.py:21
+msgid "You have already requested an OTP, please wait!"
+msgstr "لقد طلبت بالفعل OTP ،يرجى الانتظار"
+
+#: core/errors.py:24
+msgid "Your email's domain does not match with selected campus domain!"
+msgstr "مجال بريدك الإلكتروني لا يتطابق مع مجال الحرم الجامعي المحدد"
+
+#: core/errors.py:25
+msgid "Account with this email already exist!"
+msgstr "االبريد الإلكتروني موجود بالفعل"
+
+#: core/errors.py:26
+msgid "Only event's host can perform this action!"
+msgstr "يمكن لمضيف الفعالية فقط تنفيذ هذا الإجراء"
+
+#: core/errors.py:27
+msgid "You did not apply for this event!"
+msgstr "أنت لم تتقدم لهذه الفعالية"
+
+#: core/errors.py:28
+msgid "Only the owner can perform this action!"
+msgstr "يمكن لمالك المنشور فقط تنفيذ هذا الإجراء"
+
+#: core/errors.py:29
+msgid "You have already rated this post!"
+msgstr "لقد قمت بالفعل بتقييم هذا المنشور"
+
+#: core/errors.py:30
+msgid "You have already applied to this post!"
+msgstr "لقد قمت بالفعل بالتقديم على هذا المنشور"
+
+#: core/errors.py:31
+msgid "You cannot apply to your own post!"
+msgstr "لا يمكنك التقديم على منشورك الخاص"
+
+#: core/errors.py:32
+msgid "You cannot cancel this application!"
+msgstr "لا يمكنك إلغاء هذا التفديم"
+
+#: core/errors.py:33
+msgid "It must be a pending application!"
+msgstr "يجب أن يكون الطلب معلقًا"
+
+#: core/errors.py:34
+msgid "It must be an accepted application!"
+msgstr "يجب أن يكون الطلب مقبولاً"
+
+#: core/errors.py:35
+msgid "Unsupported action!"
+msgstr "إجراء غير مدعوم"
+
+#: core/errors.py:36
+msgid "Unsupported report type!"
+msgstr "نوع تقرير غير مدعوم"
+
+#: core/errors.py:37
+msgid "You have already reported a fix!"
+msgstr "لقد أبلغت بالفعل عن إصلاح للمشكلة"
+
+#: core/errors.py:38
+msgid "You must have a completed application to rate this post!"
+msgstr "يجب أن يكون لديك تطبيق مكتمل لتقييم هذا المنشور"
+
+#: core/errors.py:40
+msgid "Building supervisors cannot change building. Please contact us!"
+msgstr "لا يمكن لمشرف المبنى تغيير مكان الافامة. الرجاء التواصل معنا"
+
+#: core/errors.py:43
+msgid "You cannot delete a post that has accepted or completed applications!"
+msgstr "لا يمكنك حذف المنشور الذي قبل أو أكمل الطلبات"
+
+#: core/exceptions.py:99
+msgid "Token is invalid!"
+msgstr "الرمز غير صالح"
+
+#: core/validators.py:6
+msgid "Special characters and digits are now allowed"
+msgstr "الأحرف والأرقام الخاصة مسموح بها الآن"
+
+#: core/validators.py:11
+msgid "Mobile number must be 10 digits starting with '05'"
+msgstr "يجب أن يتكون رقم الهاتف المحمول من 10 أرقام تبدأ بـ "05""
+
+#: core/validators.py:15
+msgid "Username is a student id. (e.g. s201477960 or t201022347)"
+msgstr "اسم المستخدم هو معرف الطالب. (مثل s201477960 أو t201022347)"

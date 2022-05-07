@@ -87,29 +87,31 @@ class ResidentService:
 
     @staticmethod
     def make_supervisor(resident_profile: ResidentProfile) -> None:
+        if not resident_profile.is_supervisor:
+            ResidentService.send_push_notification(
+                campus=resident_profile.room.building.campus,
+                receivers=[resident_profile],
+                title='Congrats!. You have been promoted',
+                body='You are now the supervisor of your building'
+            )
         resident_profile.is_supervisor = True
         resident_profile.save()
         group, created = Group.objects.get_or_create(name=GroupEnum.Supervisor.value)
         group.user_set.add(resident_profile.user)
-        ResidentService.send_push_notification(
-            campus=resident_profile.room.building.campus,
-            receivers=[resident_profile],
-            title='Congrats!. You was promoted',
-            body='You are now the supervisor of your building'
-        )
 
     @staticmethod
     def remove_supervisor(resident_profile: ResidentProfile) -> None:
+        if resident_profile.is_supervisor:
+            ResidentService.send_push_notification(
+                campus=resident_profile.room.building.campus,
+                receivers=[resident_profile],
+                title='Sorry!. You have been downgraded',
+                body='You are now not the supervisor of your building'
+            )
         resident_profile.is_supervisor = False
         resident_profile.save()
         group, created = Group.objects.get_or_create(name=GroupEnum.Supervisor.value)
         group.user_set.remove(resident_profile.user)
-        ResidentService.send_push_notification(
-            campus=resident_profile.room.building.campus,
-            receivers=[resident_profile],
-            title='Sorry!. You was downgraded',
-            body='You are now not the supervisor of your building'
-        )
 
 
 class BuildingService:
@@ -158,4 +160,5 @@ class BuildingService:
     def update_building(building: Building, whatsApp_link: str = None, location_url: str = None) -> Building:
         building.whatsApp_link = whatsApp_link
         building.location_url = location_url
+        building.save()
         return building

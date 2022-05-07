@@ -43,6 +43,7 @@ urlpatterns = [
     path(f'api/{API_VERSION}/posts/', include('apps.post.urls')),
     path(f'api/{API_VERSION}/notifications/', include('apps.notification.urls')),
     path(f'api/{API_VERSION}/reports/', include('apps.report.urls')),
+    path('rosetta/', include('rosetta.urls')),
     path(f'api/{API_VERSION}/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('admin/', admin.site.urls),
 ]
