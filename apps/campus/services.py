@@ -1,4 +1,5 @@
 import json
+from typing import Iterable
 from django.utils import timezone
 from .models import *
 from core.errors import APIError, Error
@@ -11,6 +12,20 @@ from django.contrib.auth.models import Group
 
 
 class ResidentService:
+
+    @staticmethod
+    def send_push_notification(campus: Campus, receivers: Iterable[ResidentProfile], title: str, body: str) -> None:
+        if len(receivers) != 0:
+            NotificationService.send(
+                type=NotificationType.PushNotification,
+                title=title,
+                body=body,
+                receivers=','.join([resident.user.username for resident in receivers]),
+                data={
+                    "type": "campus",
+                    "instance_id": campus.id
+                }
+            )
 
     @staticmethod
     def create_resident_profile(email: str, password: str, otp: str, room_id: int,
@@ -76,6 +91,12 @@ class ResidentService:
         resident_profile.save()
         group, created = Group.objects.get_or_create(name=GroupEnum.Supervisor.value)
         group.user_set.add(resident_profile.user)
+        ResidentService.send_push_notification(
+            campus=resident_profile.room.building.campus,
+            receivers=[resident_profile],
+            title='Congrats!. You was promoted',
+            body='You are now the supervisor of your building'
+        )
 
     @staticmethod
     def remove_supervisor(resident_profile: ResidentProfile) -> None:
@@ -83,6 +104,12 @@ class ResidentService:
         resident_profile.save()
         group, created = Group.objects.get_or_create(name=GroupEnum.Supervisor.value)
         group.user_set.remove(resident_profile.user)
+        ResidentService.send_push_notification(
+            campus=resident_profile.room.building.campus,
+            receivers=[resident_profile],
+            title='Sorry!. You was downgraded',
+            body='You are now not the supervisor of your building'
+        )
 
 
 class BuildingService:
