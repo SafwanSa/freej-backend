@@ -68,7 +68,6 @@ THIRD_PARTY_APPS = [
     "drf_yasg",
     "nested_admin",
     "django_object_actions",
-    "rosetta"
 ]
 
 LOCAL_APPS = [
