@@ -95,8 +95,8 @@ class EventService:
         EventService.send_push_notification(
             event=event,
             receivers=event_joiners,
-            title=f'The event ({event.name}) has been deleted :(',
-            body="Sorry for that"
+            title='Deleted event 😞',
+            body=f"The event ({event.name}) has been deleted by the host"
         )
         return event
 
@@ -112,14 +112,20 @@ class EventService:
             if application.status == EventApplication.ApplicationStatus.Cancelled.value:
                 application.status = EventApplication.ApplicationStatus.Joined.value
                 application.save()
-            return application
         else:
             new_application = EventApplication.objects.create(
                 resident_profile=resident_profile,
                 event=event,
                 status=EventApplication.ApplicationStatus.Joined.value
             )
-            return new_application
+            application = new_application
+        EventService.send_push_notification(
+            event=event,
+            receivers=[event.host],
+            title='A new joiner to your event',
+            body='{} has joined the event ({})'.format(resident_profile.user.first_name, event.name)
+        )
+        return application
 
     @staticmethod
     def leave_event(resident_profile: ResidentProfile, event: Event) -> EventApplication:
@@ -132,6 +138,12 @@ class EventService:
             application = applications.first()
             application.status = EventApplication.ApplicationStatus.Cancelled.value
             application.save()
+            EventService.send_push_notification(
+                event=event,
+                receivers=[event.host],
+                title='Someone has left your event',
+                body='{} has left the event ({})'.format(resident_profile.user.first_name, event.name)
+            )
             return application
         else:
             raise APIError(Error.NO_EVENT_APPLICATION)
