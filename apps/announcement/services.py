@@ -1,4 +1,5 @@
 import json
+from typing import Iterable
 from django.utils import timezone
 from .models import *
 from core.errors import APIError, Error
@@ -13,6 +14,20 @@ from django.contrib.auth.models import Group
 class AnnouncementService:
 
     @staticmethod
+    def send_push_notification(announcement: Announcement,
+                               receivers: Iterable[ResidentProfile], title: str, body: str) -> None:
+        NotificationService.send(
+            type=NotificationType.PushNotification,
+            title=title,
+            body=body,
+            receivers=','.join([resident.user.username for resident in receivers]),
+            data={
+                "type": "announcement",
+                "instance_id": announcement.id
+            }
+        )
+
+    @staticmethod
     def send_building_announcement(resident_profile: ResidentProfile, building: Building,
                                    title: str, body: str) -> BuildingAnnouncement:
         new_announcement = BuildingAnnouncement.objects.create(
@@ -23,15 +38,11 @@ class AnnouncementService:
             body=body
         )
         building_residents = campusQueries.get_all_building_residents(building=building)
-        NotificationService.send(
-            type=NotificationType.PushNotification,
+        AnnouncementService.send_push_notification(
+            announcement=new_announcement,
+            receivers=building_residents,
             title=title,
-            body=body,
-            receivers=','.join([resident.user.username for resident in building_residents]),
-            data={
-                "type": "announcement",
-                "instance_id": new_announcement.id
-            }
+            body=body
         )
         return new_announcement
 

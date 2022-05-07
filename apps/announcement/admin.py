@@ -3,6 +3,10 @@ from .models import *
 from django.utils.translation import gettext_lazy as _
 from core import utils
 from core.admin import BaseAdmin, BaseStackedInline, BaseTabularInline
+from django_object_actions import DjangoObjectActions
+from . import queries
+from apps.campus import queries as campusQueries
+from .services import AnnouncementService
 
 
 class AnnouncementAdmin(BaseAdmin):
@@ -19,14 +23,26 @@ class BuildingAnnouncementAdmin(BaseAdmin):
     search_fields = ['sender__username', 'title']
 
 
-class CampusAnnouncementAdmin(BaseAdmin):
+class CampusAnnouncementAdmin(DjangoObjectActions, BaseAdmin):
     model = CampusAnnouncement
     list_display = ['id', utils.linkify_field('sender'), utils.linkify_field('campus'), 'title', 'created_at']
     list_filter = ['campus', 'created_at']
     search_fields = ['sender__username', 'title']
 
+    def notify_residents(modeladmin, request, instance):
+        instance.save()
+        campus_residents = campusQueries.get_all_campus_residents(campus=instance.campus)
+        AnnouncementService.send_push_notification(
+            announcement=instance,
+            title=instance.title,
+            body=instance.body,
+            receivers=campus_residents
+        )
 
-class CommercialAnnouncementAdmin(BaseAdmin):
+    change_actions = ('notify_residents',)
+
+
+class CommercialAnnouncementAdmin(DjangoObjectActions, BaseAdmin):
     model = CommercialAnnouncement
     list_display = [
         'id',
@@ -39,6 +55,18 @@ class CommercialAnnouncementAdmin(BaseAdmin):
     ]
     list_filter = ['campus', 'created_at']
     search_fields = ['sender__username', 'title']
+
+    def notify_residents(modeladmin, request, instance):
+        instance.save()
+        campus_residents = campusQueries.get_all_campus_residents(campus=instance.campus)
+        AnnouncementService.send_push_notification(
+            announcement=instance,
+            title=instance.title,
+            body=instance.body,
+            receivers=campus_residents
+        )
+
+    change_actions = ('notify_residents',)
 
 
 admin.site.register(Announcement, AnnouncementAdmin)
