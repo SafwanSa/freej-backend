@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-07 14:13+0000\n"
+"POT-Creation-Date: 2022-05-07 18:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -171,6 +171,14 @@ msgstr "لا يمكن لمشرف المبنى تغيير مكان الافامة
 #: core/errors.py:43
 msgid "You cannot delete a post that has accepted or completed applications!"
 msgstr "لا يمكنك حذف المنشور الذي قبل أو أكمل الطلبات"
+
+#: core/errors.py:44
+msgid "The host is already a joiner!"
+msgstr "المضيف حاضر بالغعل"
+
+#: core/errors.py:45
+msgid "Only the sender can delete this announcement!"
+msgstr "لا يمكنك حذف الرسالة لاتك لست المُرسل"
 
 #: core/exceptions.py:99
 msgid "Token is invalid!"
