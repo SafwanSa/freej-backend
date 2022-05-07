@@ -5,5 +5,6 @@ urlpatterns = [
     path('', views.CampusAndBuildingAnnouncementsView.as_view()),
     path('commercial/', views.CommercialAnnouncementsView.as_view()),
     path('send/', views.SendAnnouncementView.as_view()),
-    path('<int:pk>/', views.DeleteAnnouncementView.as_view())
+    path('<int:pk>/', views.DeleteAnnouncementView.as_view()),
+    path('commercial/<int:pk>/impression/', views.RecordAdImpression.as_view())
 ]

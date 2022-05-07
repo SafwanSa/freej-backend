@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from core.errors import Error, APIError
 from . import queries
 from apps.campus import queries as campusQueries
-from apps.campus.permissions import SupervisorAccess
+from apps.campus.permissions import ResidentProfileAccess, SupervisorAccess
 from .services import AnnouncementService
 
 
@@ -60,3 +60,13 @@ class DeleteAnnouncementView(APIView):
         self.check_object_permissions(request=request, obj=announcement.building)
         announcement = AnnouncementService.delete_building_announcement(announcement=announcement)
         return Response(BuildingAnnouncementSerializer(announcement).data)
+
+
+class RecordAdImpression(APIView):
+    permission_classes = [IsAuthenticated, ResidentProfileAccess]
+
+    def post(self, request, pk):
+        resident_profile = campusQueries.get_resident_profile_by(user=request.user)
+        announcement = queries.get_commercial_announcement_by_id(id=pk)
+        AnnouncementService.record_impression(announcement=announcement)
+        return Response({})

@@ -50,3 +50,9 @@ class AnnouncementService:
     def delete_building_announcement(announcement=BuildingAnnouncement) -> BuildingAnnouncement:
         announcement.delete()
         return announcement
+
+    @staticmethod
+    def record_impression(announcement=CommercialAnnouncement) -> None:
+        if announcement.type == Announcement.AnnouncementType.Advertisement.value:
+            announcement.impressions += 1
+            announcement.save()
