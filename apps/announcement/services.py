@@ -16,7 +16,7 @@ class AnnouncementService:
     @staticmethod
     def send_push_notification(announcement: Announcement,
                                receivers: Iterable[ResidentProfile], title: str, body: str) -> None:
-        if receivers.count() != 0:
+        if len(receivers) != 0:
             NotificationService.send(
                 type=NotificationType.PushNotification,
                 title=title,
