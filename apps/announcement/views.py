@@ -58,7 +58,10 @@ class DeleteAnnouncementView(APIView):
         resident_profile = campusQueries.get_resident_profile_by(user=request.user)
         announcement = queries.get_building_announcement_by_id(id=pk)
         self.check_object_permissions(request=request, obj=announcement.building)
-        announcement = AnnouncementService.delete_building_announcement(announcement=announcement)
+        announcement = AnnouncementService.delete_building_announcement(
+            resident_profile=resident_profile,
+            announcement=announcement
+        )
         return Response(BuildingAnnouncementSerializer(announcement).data)
 
 

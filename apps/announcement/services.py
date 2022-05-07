@@ -48,7 +48,11 @@ class AnnouncementService:
         return new_announcement
 
     @staticmethod
-    def delete_building_announcement(announcement=BuildingAnnouncement) -> BuildingAnnouncement:
+    def delete_building_announcement(resident_profile: ResidentProfile,
+                                     announcement=BuildingAnnouncement) -> BuildingAnnouncement:
+        if announcement.sender != resident_profile:
+            raise APIError(Error.SENDER_CAN_DELETE)
+
         announcement.delete()
         return announcement
 

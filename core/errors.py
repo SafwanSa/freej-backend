@@ -42,6 +42,7 @@ class Error(Enum):
         'code': -654,
         'detail': _("You cannot delete a post that has accepted or completed applications!")}
     HOST_IS_JOINER = {'code': -554, 'detail': _("The host is already a joiner!")}
+    SENDER_CAN_DELETE = {'code': -594, 'detail': _("Only the sender can delete this announcement!")}
 
 
 class APIError(Exception):
