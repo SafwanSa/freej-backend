@@ -7,10 +7,11 @@ from core.admin import BaseAdmin, BaseStackedInline, BaseTabularInline
 class NotificationAdmin(BaseAdmin):
     model = Notification
     list_display = [
-        'receivers',
-        'created_at',
+        'id',
+        'get_receivers',
         'title',
-        'body'
+        'body',
+        'created_at'
     ]
     list_filter = [
         'type',
@@ -19,3 +20,11 @@ class NotificationAdmin(BaseAdmin):
     search_fields = [
         'receivers'
     ]
+
+    def get_receivers(self, obj):
+        receivers = obj.receivers.split(',')
+        if len(receivers) > 1:
+            return str(len(receivers)) + ' receivers'
+        else:
+            return receivers
+    get_receivers.short_description = 'Receivers'
