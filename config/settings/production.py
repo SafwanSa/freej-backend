@@ -168,10 +168,10 @@ LOGGING = {
             "handlers": ["console"],
             "propagate": True,
         },
-        # "django": {
-        #     "level": "INFO",
-        #     "handlers": ["info_handler"],
-        #     "propagate": True,
-        # },
+        "django": {
+            "level": "INFO",
+            "handlers": ["info_handler"],
+            "propagate": True,
+        },
     },
 }
