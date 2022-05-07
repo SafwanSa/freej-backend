@@ -27,3 +27,7 @@ def get_fcm_token_with(user: User, token: str) -> FCMToken:
 
 def get_active_tokens_with(usernames: list) -> Iterable[FCMToken]:
     return FCMToken.objects.filter(is_active=True, user__username__in=usernames)
+
+
+def get_staff_accounts() -> Iterable[User]:
+    return User.objects.filter(is_staff=True)
