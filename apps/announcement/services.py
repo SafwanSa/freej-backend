@@ -38,7 +38,7 @@ class AnnouncementService:
             title=title,
             body=body
         )
-        building_residents = campusQueries.get_all_building_residents(building=building).exclude(resident_profile)
+        building_residents = campusQueries.get_all_building_residents(building=building).exclude(id=resident_profile.id)
         AnnouncementService.send_push_notification(
             announcement=new_announcement,
             receivers=building_residents,
@@ -50,7 +50,7 @@ class AnnouncementService:
     @staticmethod
     def delete_building_announcement(resident_profile: ResidentProfile,
                                      announcement=BuildingAnnouncement) -> BuildingAnnouncement:
-        if announcement.sender != resident_profile:
+        if announcement.sender != resident_profile.user:
             raise APIError(Error.SENDER_CAN_DELETE)
 
         announcement.delete()
