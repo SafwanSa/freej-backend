@@ -31,3 +31,10 @@ def get_active_tokens_with(usernames: list) -> Iterable[FCMToken]:
 
 def get_staff_accounts() -> Iterable[User]:
     return User.objects.filter(is_staff=True)
+
+
+def get_otp_by_id(id=int) -> OTP:
+    try:
+        return OTP.objects.get(id=id)
+    except OTP.DoesNotExist:
+        raise APIError(Error.INSTANCE_NOT_FOUND, extra=[OTP._meta.model_name])

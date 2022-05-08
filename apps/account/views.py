@@ -67,7 +67,8 @@ class CheckOTPView(APIView):
         serializer = CheckOTPSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         otp = AuthService.check_otp(**serializer.data)
-        return Response({'message': _('OTP is valid')})
+        token = AuthService.generate_check_otp_token(otp=otp)
+        return Response({'message': _('OTP is valid'), 'token': token})
 
 
 class ChangePasswordView(APIView):

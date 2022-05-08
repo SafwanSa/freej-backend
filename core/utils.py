@@ -40,13 +40,14 @@ class PathAndRename(object):
         return os.path.join(self.path, filename)
 
 
-def generate_token(id: int, hours_expiry: int, type: str) -> str:
-    payload = {
-        "token_type": type,
-        "exp": (datetime.now() + timedelta(hours=hours_expiry)).timestamp(),
-        "user_id": id
-    }
+def generate_token(seconds_exp: int, type: str, payload: dict) -> str:
+    payload['token_type'] = type
+    payload['exp'] = (datetime.now() + timedelta(seconds=seconds_exp)).timestamp()
     return jwt.encode(payload, f"{settings.SECRET_KEY}", algorithm="HS256")
+
+
+def decode_jwt(token: str) -> dict:
+    return jwt.decode(token, key=settings.SECRET_KEY, algorithms=["HS256"])
 
 
 def generate_otp() -> str:

@@ -140,6 +140,11 @@ class AuthService:
             raise APIError(Error.INVALID_OTP)
 
     @staticmethod
+    def generate_check_otp_token(otp: OTP) -> str:
+        token = utils.generate_token(seconds_exp=600, type='otp_check', payload={'otp_id': otp.id})
+        return token
+
+    @staticmethod
     def optain_resident_access_token(user: User, token: dict) -> dict:
         if not user.groups.filter(name=GroupEnum.Resident.value).exists():
             raise APIError(Error.NO_ACTIVE_ACCOUNT)
@@ -165,10 +170,19 @@ class AuthService:
         return otp
 
     @staticmethod
-    def change_password(username: str, new_password: str) -> User:
+    def change_password(username: str, new_password: str, token: str) -> User:
+        try:
+            payload = utils.decode_jwt(token=token)
+            otp = queries.get_otp_by_id(id=payload.get('otp_id'))
+            if not otp.is_active or otp.username != username:
+                raise APIError(Error.INVALID_TOKEN_OR_OTP)
+        except Exception:
+            raise APIError(Error.INVALID_JWT_TOKEN)
         user = queries.get_users_with(username=username).first()
         if user:
             password_validation.validate_password(new_password, user)
             user.set_password(new_password)
             user.save()
+        otp.is_active = False
+        otp.save()
         return user
