@@ -37,4 +37,4 @@ class CommercialAnnouncement(Announcement):
         max_length=2048,
         blank=True, null=True
     )
-    link = models.URLField(null=True, blank=True)
+    link = models.URLField(max_length=1024, null=True, blank=True)

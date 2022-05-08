@@ -10,7 +10,7 @@ class Campus(BaseModel):
     name_ar = models.CharField(max_length=100)
     name_en = models.CharField(max_length=100)
     email_domain = models.CharField(max_length=50, null=True, blank=True)
-    location_url = models.URLField(null=True, blank=True)
+    location_url = models.URLField(max_length=1024, null=True, blank=True)
     image = models.FileField(
         upload_to=utils.PathAndRename(
             'uploads/campuses/images/{}'.format(time.strftime("%Y/%m/%d"))),
@@ -24,14 +24,14 @@ class Campus(BaseModel):
 class Building(BaseModel):
     campus = models.ForeignKey(Campus, on_delete=models.CASCADE, related_name='buildings')
     name = models.CharField(max_length=10)
-    location_url = models.URLField(null=True, blank=True)
+    location_url = models.URLField(max_length=1024, null=True, blank=True)
     supervisor = models.OneToOneField(
         'campus.ResidentProfile',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name='supervised_building')
-    whatsApp_link = models.URLField(null=True, blank=True)
+    whatsApp_link = models.URLField(max_length=1024, null=True, blank=True)
 
     def __str__(self) -> str:
         return f'{self.campus.name_en}-{self.name}'
@@ -47,7 +47,7 @@ class Room(BaseModel):
 
 class ResidentProfile(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='resident_profile')
-    photo = models.URLField(null=True, blank=True)
+    photo = models.URLField(max_length=1024, null=True, blank=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='residents')
     is_supervisor = models.BooleanField(default=False)
     rating = models.FloatField(default=0)

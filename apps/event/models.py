@@ -22,7 +22,7 @@ class Event(BaseModel):
     type = models.CharField(max_length=30, choices=utils.create_choices_from_enum(EventType))
     name = models.CharField(max_length=100)
     description = models.TextField()
-    location_url = models.URLField(null=True, blank=True)
+    location_url = models.URLField(max_length=1024, null=True, blank=True)
     date = models.DateTimeField()
     status = models.CharField(max_length=30, choices=utils.create_choices_from_enum(EventStatus))
 
@@ -32,7 +32,7 @@ class Event(BaseModel):
 
 class EventImage(BaseModel):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='images')
-    image = models.URLField()
+    image = models.URLField(max_length=1024)
 
 
 class EventApplication(BaseModel):
